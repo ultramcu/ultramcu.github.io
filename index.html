@@ -11,13 +11,17 @@
 <meta property="og:description" content="C, MCUs, AI-harnessing, bug hunting. The whole portfolio as a silicon datasheet.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ultramcu.github.io/">
+<script>/* apply saved theme before paint to avoid a flash */try{var _t=localStorage.getItem('theme');if(_t==='light'||_t==='dark')document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script>
 <style>
   :root{
     --bg:#ffffff; --fg:#0a0a0a; --muted:#6b6b6b; --rule:#0a0a0a;
     --hair:#c9c9c9; --max:64rem;
   }
+  /* forced dark via the toggle */
+  :root[data-theme="dark"]{ --bg:#0b0b0b; --fg:#ededed; --muted:#9a9a9a; --rule:#ededed; --hair:#3a3a3a; }
+  /* auto dark (OS) — unless the user explicitly forced light */
   @media (prefers-color-scheme:dark){
-    :root{ --bg:#0b0b0b; --fg:#ededed; --muted:#9a9a9a; --rule:#ededed; --hair:#3a3a3a; }
+    :root:not([data-theme="light"]){ --bg:#0b0b0b; --fg:#ededed; --muted:#9a9a9a; --rule:#ededed; --hair:#3a3a3a; }
   }
   *{ box-sizing:border-box }
   html{ -webkit-text-size-adjust:100% }
@@ -53,6 +57,14 @@
   .descfield{ display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; margin:.2rem 0 .1rem }
   .fname{ font-weight:700; letter-spacing:.04em }
   .fval{ color:var(--muted) }
+  /* ---- theme toggle (in the top bar) ---- */
+  .tbtn{
+    font:inherit; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase;
+    background:transparent; color:var(--muted); border:1px solid var(--hair);
+    padding:.05rem .45rem; border-radius:3px; cursor:pointer; white-space:nowrap;
+  }
+  .tbtn:hover{ color:var(--fg); border-color:var(--fg) }
+  .tbtn:focus-visible{ outline:2px solid var(--fg); outline-offset:2px; color:var(--fg) }
 
   /* ---- section heading (inverted) ---- */
   section{ margin-top:1.7rem }
@@ -201,6 +213,7 @@
       <span>ULTRA·MCU SEMICONDUCTOR</span>
       <span>DS-001 · STATUS: PRODUCTION</span>
       <span>REV. A — 2026</span>
+      <button id="themebtn" class="tbtn" type="button" aria-label="Toggle dark mode" hidden>☾ dark</button>
     </div>
     <h1 class="part">ULTRAMCU-1<span class="rev">Rev. A — 2026</span></h1>
     <p class="descfield"><span class="fname">Description:</span><span class="fval"># C, MCUs, AI-harnessing, bug hunting.</span></p>
@@ -454,6 +467,38 @@
     var t = 0;
     secs.forEach(function(el){ t += 70; el.style.animationDelay = t + 'ms'; });
   }catch(e){ /* no-op: content already visible */ }
+})();
+
+// Theme toggle: light ⇄ dark, persisted in localStorage. Default (no choice
+// yet) follows the OS via prefers-color-scheme. JS-off: the button stays
+// hidden and the page uses the OS theme.
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themebtn');
+  if(!btn) return;
+  var mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+  function effective(){
+    var t = root.getAttribute('data-theme');
+    if(t==='light'||t==='dark') return t;
+    return (mq && mq.matches) ? 'dark' : 'light';
+  }
+  function paint(){
+    var e = effective();
+    btn.textContent = e==='dark' ? '☀ light' : '☾ dark';
+    btn.setAttribute('aria-pressed', e==='dark' ? 'true' : 'false');
+    btn.setAttribute('title', e==='dark' ? 'Switch to light' : 'Switch to dark');
+  }
+  btn.hidden = false;
+  paint();
+  btn.addEventListener('click', function(){
+    var next = effective()==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+    paint();
+  });
+  if(mq && mq.addEventListener){
+    mq.addEventListener('change', function(){ if(!root.getAttribute('data-theme')) paint(); });
+  }
 })();
 </script>
 </body>
