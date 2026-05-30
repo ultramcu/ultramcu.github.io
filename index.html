@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ULTRA·MCU — make all</title>
+<meta name="description" content="ULTRA·MCU — C, MCUs, AI-harnessing, bug hunting. Open-source Dart/Flutter &amp; Go libraries, embedded C firmware, research artifacts, and upstreamed fixes. Built once, zero deps.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a0a0a">
+<meta property="og:title" content="ULTRA·MCU — make all">
+<meta property="og:description" content="C, MCUs, AI-harnessing, bug hunting. Tested libs on pub.dev &amp; pkg.go.dev, embedded firmware, upstreamed fixes.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ultramcu.github.io/">
+<style>
+  :root{
+    --bg:#0a0a0a; --fg:#e9e9e9; --muted:#8a8a8a; --rule:#2a2a2a;
+    --max:64rem;
+  }
+  *{box-sizing:border-box}
+  html{ -webkit-text-size-adjust:100% }
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font-family:ui-monospace,SFMono-Regular,"SF Mono","Cascadia Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    font-size:15px; line-height:1.55; letter-spacing:.01em;
+    padding:clamp(.75rem,2.5vw,2rem);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:var(--max); margin:0 auto }
+  a{ color:inherit; text-decoration:none }
+  a:hover, a:focus-visible{ text-decoration:underline; text-underline-offset:2px }
+  a:focus-visible{ outline:2px solid var(--fg); outline-offset:2px }
+
+  /* ---- terminal window chrome ---- */
+  .term{ border:1px solid var(--rule); border-radius:8px; overflow:hidden; background:#0c0c0c }
+  .chrome{
+    display:flex; align-items:center; gap:.5rem;
+    padding:.5rem .75rem; border-bottom:1px solid var(--rule);
+    color:var(--muted); font-size:.82rem;
+  }
+  .dot{ width:.7rem; height:.7rem; border:1px solid var(--muted); border-radius:50% }
+  .chrome .title{ margin-left:.4rem }
+  .pad{ padding:clamp(.9rem,2.2vw,1.4rem) }
+
+  /* ---- masthead ---- */
+  .prompt{ color:var(--muted) }
+  .prompt b{ color:var(--fg); font-weight:700 }
+  h1{ font-size:inherit; font-weight:700; margin:.2rem 0 .1rem; letter-spacing:.04em }
+  .tag-line{ color:var(--muted); margin:0 0 .9rem }
+  .boot{ color:var(--muted); margin:.2rem 0 1rem; white-space:pre-wrap }
+  .boot .ok{ color:var(--fg) }
+  .run{ margin:.3rem 0 0 }
+
+  /* ---- dependency graph / nav ---- */
+  .deps{ margin:1.1rem 0 .4rem; white-space:pre; overflow-x:auto }
+  .deps a{ color:var(--fg) }
+  .deps .c{ color:var(--muted) }
+
+  /* ---- section bar ---- */
+  section{ margin-top:1.6rem }
+  .bar{
+    background:var(--fg); color:var(--bg); font-weight:700;
+    padding:.18rem .6rem; display:inline-block; letter-spacing:.06em;
+  }
+  .count{ color:var(--muted); margin-left:.5rem; font-weight:400 }
+
+  /* ---- build rows ---- */
+  .rows{ margin:.5rem 0 0 }
+  .row{
+    display:grid;
+    grid-template-columns:3.4rem minmax(0,auto) 1fr auto;
+    align-items:baseline; gap:.55rem;
+    padding:.13rem 0;
+  }
+  .verb{ font-weight:700; color:var(--fg); white-space:nowrap }
+  .name{ font-weight:700; white-space:nowrap }
+  .desc{
+    color:var(--muted); position:relative; overflow:hidden; white-space:nowrap;
+    text-overflow:ellipsis; min-width:0;
+  }
+  /* dotted leader filling the gap before the description */
+  .desc::before{
+    content:"·························································································";
+    position:absolute; left:0; transform:translateX(-100%); padding-right:.4rem;
+    color:var(--rule); letter-spacing:.18em;
+  }
+  .desc span{ background:var(--bg); padding-right:.4rem; position:relative }
+  .end{ display:flex; gap:.45rem; white-space:nowrap; justify-self:end }
+  .ok{ color:var(--muted) }
+  .chip{
+    background:var(--fg); color:var(--bg); font-weight:700;
+    padding:0 .35rem; border-radius:2px;
+  }
+  .chip:hover,.chip:focus-visible{ text-decoration:none; outline-offset:1px }
+  .src{ color:var(--muted) }
+  .src:hover,.src:focus-visible{ color:var(--fg) }
+
+  /* ---- result + footer ---- */
+  .result{ margin-top:1.8rem; border-top:1px solid var(--rule); padding-top:1rem }
+  .result .pass{ color:var(--fg); font-weight:700 }
+  .result .meta{ color:var(--muted) }
+  footer{ margin-top:1.6rem; color:var(--muted) }
+  footer .links{ margin:.4rem 0; display:flex; flex-wrap:wrap; gap:.2rem 1.1rem }
+  footer .links a{ color:var(--fg) }
+  .caret{ display:inline-block; width:.6ch; background:var(--fg); color:transparent; animation:blink 1.1s step-end infinite }
+  @keyframes blink{ 50%{ opacity:0 } }
+
+  /* reveal (JS adds .play; lines fade in) */
+  .play .line{ opacity:0; transform:translateY(2px); animation:in .28s ease forwards }
+  @keyframes in{ to{ opacity:1; transform:none } }
+
+  @media (max-width:40rem){
+    body{ font-size:13.5px }
+    /* line 1: verb · name · tags   |   line 2: description (full width, indented) */
+    .row{ grid-template-columns:2.7rem 1fr auto; row-gap:.04rem; padding:.3rem 0 }
+    .row .desc{ grid-column:1 / -1; padding-left:2.7rem; white-space:normal; text-overflow:clip }
+    .desc::before{ display:none }
+    .desc span{ background:none; padding:0 }
+    .deps{ font-size:.92em }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .caret{ animation:none }
+    .play .line{ opacity:1; transform:none; animation:none }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="term">
+  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ultramcu@metal: ~/portfolio — make</span></div>
+  <div class="pad">
+
+  <!-- ===== masthead ===== -->
+  <header>
+    <div class="boot" aria-hidden="true">[0.000] ULTRA·MCU ▸ power-on reset <span class="ok">OK</span>
+[0.001] cpu: P89C51 ▸ 8051 core @ 11.0592 MHz ▸ console up</div>
+    <h1>ULTRA·MCU</h1>
+    <p class="tag-line"># C, MCUs, AI-harnessing, bug hunting.</p>
+    <p class="run prompt"><b>ultramcu@metal</b>:<b>~/portfolio</b>$ <b>make all</b></p>
+
+    <nav class="deps" aria-label="Sections">
+<span class="c">all ─┬─ </span><a href="#demos">demos</a><span class="c">     ▸ live in your browser</span>
+<span class="c">     ├─ </span><a href="#dart">dart</a><span class="c">      ▸ pub.dev ×7</span>
+<span class="c">     ├─ </span><a href="#go">go</a><span class="c">        ▸ pkg.go.dev ×6</span>
+<span class="c">     ├─ </span><a href="#tools">tools</a><span class="c">     ▸ claude-code</span>
+<span class="c">     ├─ </span><a href="#firmware">firmware</a><span class="c">  ▸ C / embedded ×10</span>
+<span class="c">     ├─ </span><a href="#research">research</a><span class="c">  ▸ IEEE ×2</span>
+<span class="c">     └─ </span><a href="#upstream">upstream</a><span class="c">  ▸ merged PRs ×11</span></nav>
+  </header>
+
+  <main>
+  <!-- ===== demos ===== -->
+  <section id="demos">
+    <div class="bar">▌ make demos<span class="count">// running — open in your browser</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">SERVE</span><a class="name" href="https://pub.dev/packages/thai_promptpay_flutter">thai_promptpay_flutter</a><span class="desc"><span>PromptPay (EMVCo) QR widgets — gallery + decode demo</span></span><span class="end"><a class="chip" href="https://ultramcu.github.io/thai_promptpay_flutter.dart/">▶ LIVE</a><a class="src" href="https://github.com/ultramcu/thai_promptpay_flutter.dart">[src]</a></span></div>
+      <div class="row line"><span class="verb">SERVE</span><a class="name" href="https://pub.dev/packages/thai_provinces_flutter">thai_provinces_flutter</a><span class="desc"><span>Cascading Thai address picker — every widget, interactive</span></span><span class="end"><a class="chip" href="https://ultramcu.github.io/thai_provinces_flutter.dart/">▶ LIVE</a><a class="src" href="https://github.com/ultramcu/thai_provinces_flutter.dart">[src]</a></span></div>
+    </div>
+  </section>
+
+  <!-- ===== dart ===== -->
+  <section id="dart">
+    <div class="bar">▌ make dart<span class="count">// Thai Dart/Flutter · pub.dev</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_provinces">thai_provinces</a><span class="desc"><span>TH province/district/subdistrict + postal — data core</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_provinces.dart">[src]</a></span></div>
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_provinces_flutter">thai_provinces_flutter</a><span class="desc"><span>cascading address picker widgets, no codegen</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_provinces_flutter.dart">[src]</a></span></div>
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_provinces_geo">thai_provinces_geo</a><span class="desc"><span>offline GPS reverse-geocoding (lat/lng → area)</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_provinces_geo.dart">[src]</a></span></div>
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/form_builder_thai_provinces">form_builder_thai_provinces</a><span class="desc"><span>flutter_form_builder address field adapter</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/form_builder_thai_provinces">[src]</a></span></div>
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thainum">thainum</a><span class="desc"><span>Thai number toolkit — numerals, baht text, reverse parse</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thainum.dart">[src]</a></span></div>
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_promptpay">thai_promptpay</a><span class="desc"><span>PromptPay EMVCo QR codec — encode + decode + CRC</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_promptpay.dart">[src]</a></span></div>
+      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_promptpay_flutter">thai_promptpay_flutter</a><span class="desc"><span>PromptPay QR widgets (built on the codec + qr_flutter)</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_promptpay_flutter.dart">[src]</a></span></div>
+    </div>
+  </section>
+
+  <!-- ===== go ===== -->
+  <section id="go">
+    <div class="bar">▌ make go<span class="count">// Go libraries · pkg.go.dev</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-dijkstra">go-dijkstra</a><span class="desc"><span>shortest path — Dijkstra + goal-directed A*, dep-free</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-dijkstra">[src]</a></span></div>
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-ict">go-ict</a><span class="desc"><span>serial drivers: L77 bill acceptor + SP1 thermal printer</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-ict">[src]</a></span></div>
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-imgfeed">go-imgfeed</a><span class="desc"><span>provider-agnostic image loader/feed for LLMs</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-imgfeed">[src]</a></span></div>
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-thaiaddress">go-thaiaddress</a><span class="desc"><span>TH admin areas + postal codes (embedded, no DB)</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-thaiaddress">[src]</a></span></div>
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-thainum">go-thainum</a><span class="desc"><span>Thai number toolkit for Go — words, baht text, parse</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-thainum">[src]</a></span></div>
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/mcpharness">mcpharness</a><span class="desc"><span>testing toolkit for Go MCP server authors</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/mcpharness">[src]</a></span></div>
+    </div>
+  </section>
+
+  <!-- ===== tools ===== -->
+  <section id="tools">
+    <div class="bar">▌ make tools<span class="count">// Claude Code / harness</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">TOOL</span><a class="name" href="https://github.com/ultramcu/claude-compact-memory">claude-compact-memory</a><span class="desc"><span>Claude Code plugin — save/restore work across /compact</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">TOOL</span><a class="name" href="https://github.com/ultramcu/claude-usage-display">claude-usage-display</a><span class="desc"><span>always-on Claude usage display on an M5Stack Core2</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+    </div>
+  </section>
+
+  <!-- ===== firmware ===== -->
+  <section id="firmware">
+    <div class="bar">▌ make firmware<span class="count">// C / embedded — close to the metal</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/c-ulib">c-ulib</a><span class="desc"><span>small umbrella of C99 libraries for MCU use</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/micro-json">micro-json</a><span class="desc"><span>tiny byte-fed JSON parser for small MCUs, no heap</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">LD</span><a class="name" href="https://github.com/ultramcu/c-ARM-bootload">c-ARM-bootload</a><span class="desc"><span>pure-C99 ARM bootloader, Motorola S-records</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/c-TM4C129x-AES">c-TM4C129x-AES</a><span class="desc"><span>HW-accelerated AES-128-CBC on TI TM4C129x</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/c-B5800-gpio">c-B5800-gpio</a><span class="desc"><span>drive QY-B5800 industrial-PC GPIO via inb/outb</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">CXX</span><a class="name" href="https://github.com/ultramcu/acom-digimon">acom-digimon</a><span class="desc"><span>M5Core2 firmware talking to real Digimon V-Pets</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/QHY-Capture">QHY-Capture</a><span class="desc"><span>single-frame capture for QHYCCD astronomy cameras</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">CXX</span><a class="name" href="https://github.com/ultramcu/Open32-AQI">Open32-AQI</a><span class="desc"><span>ESP32 air-quality station — SPS30 → US EPA AQI</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">GO</span><a class="name" href="https://github.com/ultramcu/v20bits-reader">v20bits-reader</a><span class="desc"><span>Orange Pi: 20 digital inputs via MCP23008 + MQTT</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">SH</span><a class="name" href="https://github.com/ultramcu/FR24-Feed-monitor">FR24-Feed-monitor</a><span class="desc"><span>graduated-recovery monitor for FR24 feeders (RPi/SDR)</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+    </div>
+  </section>
+
+  <!-- ===== research ===== -->
+  <section id="research">
+    <div class="bar">▌ make research<span class="count">// IEEE artifacts</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">DOC</span><a class="name" href="https://github.com/ultramcu/ros-l2-aes">ros-l2-aes</a><span class="desc"><span>Layer-2 AES-CBC for ROS1 topics — ICSEC 2023</span></span><span class="end"><a class="src" href="https://ieeexplore.ieee.org/document/10329645">[paper]</a><span class="ok">[ OK ]</span></span></div>
+      <div class="row line"><span class="verb">DOC</span><a class="name" href="https://github.com/ultramcu/api-lang-bench">api-lang-bench</a><span class="desc"><span>PHP/Python/Node/Go REST API benchmark — InCIT 2023</span></span><span class="end"><a class="src" href="https://ieeexplore.ieee.org/document/10413079">[paper]</a><span class="ok">[ OK ]</span></span></div>
+    </div>
+  </section>
+
+  <!-- ===== upstream ===== -->
+  <section id="upstream">
+    <div class="bar">▌ make upstream<span class="count">// reproducible fixes, merged into other people's trees</span></div>
+    <div class="rows">
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/eclipse-paho/paho.golang">eclipse-paho/paho.golang</a><span class="desc"><span>MQTT v5 Go — leaks, quota underflow, DeleteRoute</span></span><span class="end"><span class="chip">MERGED</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/eclipse-paho/paho.mqtt.golang">eclipse-paho/paho.mqtt.golang</a><span class="desc"><span>MQTT v3 Go — spurious BUG log, FileStore fail-fast</span></span><span class="end"><span class="chip">MERGED</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/golang-jwt/jwt">golang-jwt/jwt</a><span class="desc"><span>MapClaims GetAudience type validation</span></span><span class="end"><span class="chip">MERGED</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/jackc/pgx">jackc/pgx</a><span class="desc"><span>pgtype geometry parsers — panic → error</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/labstack/echo">labstack/echo</a><span class="desc"><span>gzip Writer io.Writer-contract fix</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/gocarina/gocsv">gocarina/gocsv</a><span class="desc"><span>partial tag prefix-match column bug</span></span><span class="end"><span class="chip">MERGED</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/DeRuina/timberjack">DeRuina/timberjack</a><span class="desc"><span>compressed-backup umask + BackupTimeFormat</span></span><span class="end"><span class="chip">MERGED</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/bugst/go-serial">bugst/go-serial</a><span class="desc"><span>enumerator EOF abort + Linux VID/PID uppercase</span></span><span class="end"><span class="chip">MERGED</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/imaNNeo/fl_chart">imaNNeo/fl_chart</a><span class="desc"><span>touched-stack index + toDashedPath RangeError</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/cfug/dio">cfug/dio</a><span class="desc"><span>QueuedInterceptor cancel-stall + FormData.clone</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
+      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/warpdotdev/warp">warpdotdev/warp</a><span class="desc"><span>render Thai/Lao SARA AM on its consonant</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
+    </div>
+  </section>
+
+  <!-- ===== result ===== -->
+  <section class="result line" aria-label="result">
+    <div><span class="prompt"><b>$</b></span> make test</div>
+    <div class="pass">  ▸ PASS — pub.dev 160/160 · Go Report A+ · firmware builds clean</div>
+    <div class="meta">  ▸ 8 pub.dev pkgs · 6 pkg.go.dev libs · 10 firmware · 11 upstreamed · 0 failed</div>
+    <div>make: '<b>all</b>' is up to date.</div>
+  </section>
+  </main>
+
+  <!-- ===== footer ===== -->
+  <footer>
+    <div class="links">
+      <a href="https://github.com/ultramcu">github.com/ultramcu</a>
+      <a href="https://pub.dev/publishers/ultramcu.github.io/packages">pub.dev</a>
+      <a href="https://pkg.go.dev/github.com/ultramcu">pkg.go.dev</a>
+    </div>
+    <div class="prompt"><b>ultramcu@metal</b>:<b>~</b>$ <span class="caret">_</span></div>
+    <div style="margin-top:.5rem">© 2026 ULTRA·MCU — built once, zero deps, fits in cache.</div>
+  </footer>
+
+  </div><!-- /pad -->
+</div><!-- /term -->
+</div><!-- /wrap -->
+
+<script>
+// Progressive enhancement only: stagger-reveal the build lines. All content is
+// already in the HTML and fully usable with JS off. Respects reduced-motion.
+(function(){
+  try{
+    var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(rm) return;
+    var main = document.querySelector('.term .pad');
+    var lines = document.querySelectorAll('.line');
+    main.classList.add('play');
+    var t = 0;
+    lines.forEach(function(el){
+      t += 45;
+      el.style.animationDelay = t + 'ms';
+    });
+  }catch(e){ /* no-op: content already visible */ }
+})();
+</script>
+</body>
+</html>
