@@ -74,7 +74,9 @@
     margin:0; white-space:pre; overflow-x:auto; line-height:1.3;
     background:var(--bg); display:inline-block; min-width:100%; padding:.2rem;
   }
-  .fig a{ font-weight:700 }
+  /* keep ASCII diagrams uniform-width: no bold inside <pre> (bold glyphs are
+     slightly wider and shift the box borders off the monospace grid) */
+  .fig a, .fig pre b, .fig pre strong{ font-weight:400 }
 
   /* ---- features ---- */
   .features{ list-style:none; margin:0; padding:0 }
@@ -88,7 +90,7 @@
 
   /* ---- pinout (demos) ---- */
   .pins{ font-weight:700 }
-  .pinpkg a.pin{ background:var(--fg); color:var(--bg); padding:0 .3rem; font-weight:700 }
+  .pinpkg a.pin{ background:var(--fg); color:var(--bg); font-weight:400 }
   .pinpkg a.pin:hover,.pinpkg a.pin:focus-visible{ text-decoration:none; outline-offset:2px }
   .pinnote{ color:var(--muted); font-size:.8rem; margin:.5rem 0 0; letter-spacing:.04em }
 
@@ -230,19 +232,21 @@
     <h2>§2 &nbsp;BLOCK DIAGRAM</h2>
     <figure>
       <div class="fig"><pre aria-label="Block diagram: CORE with buses to peripheral blocks">                  ┌──────────────────────────┐
-                  │     [ <a href="#features">CORE</a> ]  ULTRAMCU-1   │
+                  │   [ <a href="#features">CORE</a> ]  ULTRAMCU-1   │
                   │  8051 · AI-harness · BDD │
-                  └─┬───┬───────┬───────┬──┬─┘
-       FLASH bus ───┘   │       │       │  └─── PERIPH bus
-     ┌────────────┐ ┌───┴────┐ ┌┴──────┐ ┌──────┴─────┐ ┌──────────┐
-     │ <a href="#reg-dart">DART/</a>      │ │ <a href="#reg-go">GO·LIB</a> │ │ <a href="#reg-fw">C/</a>     │ │ <a href="#reg-research">RESEARCH</a>   │ │ <a href="#status">UPSTREAM</a> │
-     │ <a href="#reg-dart">FLUTTER</a>    │ │        │ │ <a href="#reg-fw">FIRMWARE</a>│ │ <a href="#reg-research">·ROM</a>       │ │ <a href="#status">·PR</a>      │
-     │ pub.dev ×7 │ │ go ×6  │ │ C  ×10 │ │ IEEE ×2    │ │ merged   │
-     └─────┬──────┘ └────────┘ └────────┘ └────────────┘ └──────────┘
-           │
-     ┌─────┴────────────────────────────────────────────────┐
-     │ <a href="#pinout">PINOUT</a> ▸ 2 LIVE demo pins — run in your browser     │
-     └────────────────────────────────────────────────────────┘</pre></div>
+                  └────────────┬─────────────┘
+                               │
+        ┌────────────┬─────────┴─┬────────────┬────────────┐
+        │            │           │            │            │
+  ┌─────┴──────┐ ┌───┴────┐ ┌────┴─────┐ ┌────┴─────┐ ┌────┴─────┐
+  │ <a href="#reg-dart">DART/</a>      │ │ <a href="#reg-go">GO·LIB</a> │ │ <a href="#reg-fw">C/</a>       │ │ <a href="#reg-research">RESEARCH</a> │ │ <a href="#status">UPSTREAM</a> │
+  │ <a href="#reg-dart">FLUTTER</a>    │ │        │ │ <a href="#reg-fw">FIRMWARE</a> │ │ <a href="#reg-research">·ROM</a>     │ │ <a href="#status">·PR</a>      │
+  │ pub.dev ×7 │ │ go ×6  │ │ C  ×10   │ │ IEEE ×2  │ │ merged   │
+  └─────┬──────┘ └────────┘ └──────────┘ └──────────┘ └──────────┘
+        │
+  ┌─────┴───────────────────────────────────────────┐
+  │ <a href="#pinout">PINOUT</a> ▸ 2 LIVE demo pins — run in your browser │
+  └─────────────────────────────────────────────────┘</pre></div>
       <figcaption>Fig. 1 — Functional block diagram (each block links to its register section)</figcaption>
     </figure>
   </section>
