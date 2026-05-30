@@ -3,279 +3,452 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ULTRA·MCU — make all</title>
-<meta name="description" content="ULTRA·MCU — C, MCUs, AI-harnessing, bug hunting. Open-source Dart/Flutter &amp; Go libraries, embedded C firmware, research artifacts, and upstreamed fixes. Built once, zero deps.">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#0a0a0a">
-<meta property="og:title" content="ULTRA·MCU — make all">
-<meta property="og:description" content="C, MCUs, AI-harnessing, bug hunting. Tested libs on pub.dev &amp; pkg.go.dev, embedded firmware, upstreamed fixes.">
+<title>ULTRAMCU-1 — Datasheet (Rev. A)</title>
+<meta name="description" content="ULTRAMCU-1 silicon datasheet — C, MCUs, AI-harnessing, bug hunting. Dart/Flutter & Go libraries, embedded C firmware, research artifacts, and upstreamed fixes.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="ULTRAMCU-1 — Datasheet Rev. A">
+<meta property="og:description" content="C, MCUs, AI-harnessing, bug hunting. The whole portfolio as a silicon datasheet.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ultramcu.github.io/">
 <style>
   :root{
-    --bg:#0a0a0a; --fg:#e9e9e9; --muted:#8a8a8a; --rule:#2a2a2a;
-    --max:64rem;
+    --bg:#ffffff; --fg:#0a0a0a; --muted:#6b6b6b; --rule:#0a0a0a;
+    --hair:#c9c9c9; --max:64rem;
   }
-  *{box-sizing:border-box}
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0b0b0b; --fg:#ededed; --muted:#9a9a9a; --rule:#ededed; --hair:#3a3a3a; }
+  }
+  *{ box-sizing:border-box }
   html{ -webkit-text-size-adjust:100% }
   body{
     margin:0; background:var(--bg); color:var(--fg);
     font-family:ui-monospace,SFMono-Regular,"SF Mono","Cascadia Mono",Menlo,Consolas,"Liberation Mono",monospace;
-    font-size:15px; line-height:1.55; letter-spacing:.01em;
+    font-size:15px; line-height:1.5; letter-spacing:.01em;
     padding:clamp(.75rem,2.5vw,2rem);
     -webkit-font-smoothing:antialiased;
   }
   .wrap{ max-width:var(--max); margin:0 auto }
   a{ color:inherit; text-decoration:none }
-  a:hover, a:focus-visible{ text-decoration:underline; text-underline-offset:2px }
-  a:focus-visible{ outline:2px solid var(--fg); outline-offset:2px }
+  a:hover{ text-decoration:underline; text-underline-offset:2px }
+  a:focus-visible{ outline:2px solid var(--fg); outline-offset:2px; text-decoration:underline }
 
-  /* ---- terminal window chrome ---- */
-  .term{ border:1px solid var(--rule); border-radius:8px; overflow:hidden; background:#0c0c0c }
-  .chrome{
-    display:flex; align-items:center; gap:.5rem;
-    padding:.5rem .75rem; border-bottom:1px solid var(--rule);
-    color:var(--muted); font-size:.82rem;
-  }
-  .dot{ width:.7rem; height:.7rem; border:1px solid var(--muted); border-radius:50% }
-  .chrome .title{ margin-left:.4rem }
-  .pad{ padding:clamp(.9rem,2.2vw,1.4rem) }
+  .muted{ color:var(--muted) }
+  .hex{ color:var(--muted); font-weight:400 }
+
+  /* ---- document frame ---- */
+  .doc{ border:2px solid var(--rule) }
+  .pad{ padding:clamp(.9rem,2.4vw,1.5rem) }
 
   /* ---- masthead ---- */
-  .prompt{ color:var(--muted) }
-  .prompt b{ color:var(--fg); font-weight:700 }
-  h1{ font-size:inherit; font-weight:700; margin:.2rem 0 .1rem; letter-spacing:.04em }
-  .tag-line{ color:var(--muted); margin:0 0 .9rem }
-  .boot{ color:var(--muted); margin:.2rem 0 1rem; white-space:pre-wrap }
-  .boot .ok{ color:var(--fg) }
-  .run{ margin:.3rem 0 0 }
+  .mast{ border-bottom:2px solid var(--rule); }
+  .mast .top{
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline;
+    gap:.4rem 1rem; color:var(--muted); font-size:.78rem; letter-spacing:.06em;
+    border-bottom:1px solid var(--hair); padding-bottom:.5rem; margin-bottom:.7rem;
+    text-transform:uppercase;
+  }
+  h1.part{ font-size:clamp(1.5rem,6vw,2.4rem); font-weight:700; margin:.1rem 0 .15rem; letter-spacing:.08em }
+  .rev{ color:var(--muted); font-weight:400; font-size:.5em; letter-spacing:.1em; vertical-align:.35em; margin-left:.5rem; text-transform:uppercase }
+  .descfield{ display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; margin:.2rem 0 .1rem }
+  .fname{ font-weight:700; letter-spacing:.04em }
+  .fval{ color:var(--muted) }
 
-  /* ---- dependency graph / nav ---- */
-  .deps{ margin:1.1rem 0 .4rem; white-space:pre; overflow-x:auto }
-  .deps a{ color:var(--fg) }
-  .deps .c{ color:var(--muted) }
+  /* ---- section heading (inverted) ---- */
+  section{ margin-top:1.7rem }
+  h2{
+    font-size:inherit; font-weight:700; margin:0 0 .7rem;
+    background:var(--fg); color:var(--bg); display:block;
+    padding:.22rem .6rem; letter-spacing:.07em;
+  }
+  h2 .sub{ font-weight:400; opacity:.8; margin-left:.4rem; text-transform:none; letter-spacing:.03em }
 
-  /* ---- section bar ---- */
-  section{ margin-top:1.6rem }
-  .bar{
-    background:var(--fg); color:var(--bg); font-weight:700;
-    padding:.18rem .6rem; display:inline-block; letter-spacing:.06em;
+  /* ---- generic figure frame w/ dither fill ---- */
+  figure{ margin:0 }
+  figcaption{ color:var(--muted); font-size:.78rem; letter-spacing:.05em; margin:.4rem 0 0; text-transform:uppercase }
+  .fig{
+    border:1px solid var(--rule); padding:.9rem 1rem;
+    background-image:repeating-linear-gradient(45deg, var(--hair) 0, var(--hair) 1px, transparent 1px, transparent 6px);
   }
-  .count{ color:var(--muted); margin-left:.5rem; font-weight:400 }
+  .fig pre{
+    margin:0; white-space:pre; overflow-x:auto; line-height:1.3;
+    background:var(--bg); display:inline-block; min-width:100%; padding:.2rem;
+  }
+  .fig a{ font-weight:700 }
 
-  /* ---- build rows ---- */
-  .rows{ margin:.5rem 0 0 }
-  .row{
-    display:grid;
-    grid-template-columns:3.4rem minmax(0,auto) 1fr auto;
-    align-items:baseline; gap:.55rem;
-    padding:.13rem 0;
-  }
-  .verb{ font-weight:700; color:var(--fg); white-space:nowrap }
-  .name{ font-weight:700; white-space:nowrap }
-  .desc{
-    color:var(--muted); position:relative; overflow:hidden; white-space:nowrap;
-    text-overflow:ellipsis; min-width:0;
-  }
-  /* dotted leader filling the gap before the description */
-  .desc::before{
-    content:"·························································································";
-    position:absolute; left:0; transform:translateX(-100%); padding-right:.4rem;
-    color:var(--rule); letter-spacing:.18em;
-  }
-  .desc span{ background:var(--bg); padding-right:.4rem; position:relative }
-  .end{ display:flex; gap:.45rem; white-space:nowrap; justify-self:end }
-  .ok{ color:var(--muted) }
-  .chip{
-    background:var(--fg); color:var(--bg); font-weight:700;
-    padding:0 .35rem; border-radius:2px;
-  }
-  .chip:hover,.chip:focus-visible{ text-decoration:none; outline-offset:1px }
-  .src{ color:var(--muted) }
-  .src:hover,.src:focus-visible{ color:var(--fg) }
-
-  /* ---- result + footer ---- */
-  .result{ margin-top:1.8rem; border-top:1px solid var(--rule); padding-top:1rem }
-  .result .pass{ color:var(--fg); font-weight:700 }
-  .result .meta{ color:var(--muted) }
-  footer{ margin-top:1.6rem; color:var(--muted) }
-  footer .links{ margin:.4rem 0; display:flex; flex-wrap:wrap; gap:.2rem 1.1rem }
-  footer .links a{ color:var(--fg) }
-  .caret{ display:inline-block; width:.6ch; background:var(--fg); color:transparent; animation:blink 1.1s step-end infinite }
+  /* ---- features ---- */
+  .features{ list-style:none; margin:0; padding:0 }
+  .features li{ display:flex; gap:.6rem; align-items:baseline; padding:.12rem 0 }
+  .features .bullet{ color:var(--fg); font-weight:700 }
+  .features .ftext b{ font-weight:700 }
+  .features .fdot{ color:var(--hair); letter-spacing:.1em }
+  .features .ready{ margin-top:.5rem; font-weight:700; letter-spacing:.05em }
+  .caret{ display:inline-block; width:.55ch; background:var(--fg); color:transparent; animation:blink 1.1s step-end infinite }
   @keyframes blink{ 50%{ opacity:0 } }
 
-  /* reveal (JS adds .play; lines fade in) */
-  .play .line{ opacity:0; transform:translateY(2px); animation:in .28s ease forwards }
-  @keyframes in{ to{ opacity:1; transform:none } }
+  /* ---- pinout (demos) ---- */
+  .pins{ font-weight:700 }
+  .pinpkg a.pin{ background:var(--fg); color:var(--bg); padding:0 .3rem; font-weight:700 }
+  .pinpkg a.pin:hover,.pinpkg a.pin:focus-visible{ text-decoration:none; outline-offset:2px }
+  .pinnote{ color:var(--muted); font-size:.8rem; margin:.5rem 0 0; letter-spacing:.04em }
 
-  @media (max-width:40rem){
+  /* ---- memory map table ---- */
+  .mm{ width:100%; border-collapse:collapse; font-size:.93em }
+  .mm caption{ text-align:left; color:var(--muted); font-size:.78rem; letter-spacing:.05em; margin-bottom:.4rem; text-transform:uppercase }
+  .mm th,.mm td{ text-align:left; padding:.32rem .55rem; border:1px solid var(--hair); vertical-align:top }
+  .mm thead th{ border-bottom:2px solid var(--rule); letter-spacing:.05em; white-space:nowrap }
+  .mm tbody th{ font-weight:400; white-space:nowrap }
+  .mm tbody th.addr{ color:var(--muted) }
+  .mm td.region{ font-weight:700; white-space:nowrap }
+  .mm td.proj a{ font-weight:700 }
+  .mm tbody tr:hover{ background:var(--hair) }
+
+  /* ---- register description blocks ---- */
+  .reg{ border:1px solid var(--rule); margin-top:1rem }
+  .reg > .rhead{
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline;
+    gap:.3rem .8rem; padding:.35rem .6rem; border-bottom:1px solid var(--rule);
+    background-image:repeating-linear-gradient(45deg, var(--hair) 0, var(--hair) 1px, transparent 1px, transparent 6px);
+  }
+  .reg > .rhead .rname{ font-weight:700; letter-spacing:.05em; background:var(--bg); padding:0 .2rem }
+  .reg > .rhead .rw{ color:var(--muted); font-size:.82rem; letter-spacing:.05em; background:var(--bg); padding:0 .2rem }
+  .reg > .rdesc{ color:var(--muted); padding:.3rem .6rem .1rem; font-size:.86rem }
+  .reg ul.fields{ list-style:none; margin:.2rem 0 0; padding:0 }
+  .reg ul.fields > li{
+    display:grid; grid-template-columns:auto minmax(0,1fr) auto;
+    align-items:baseline; gap:.55rem; padding:.18rem .6rem; border-top:1px solid var(--hair);
+  }
+  .reg .bit{ color:var(--muted); font-weight:700; white-space:nowrap }
+  .reg .fld{ min-width:0 }
+  .reg .fld .nm{ font-weight:700 }
+  .reg .fld .ds{ color:var(--muted) }
+  .reg .end{ display:flex; gap:.4rem; white-space:nowrap; justify-self:end; align-items:baseline }
+  .reg .end .st{ color:var(--muted); font-size:.8rem; letter-spacing:.04em }
+  .reg .end a.src{ color:var(--muted) }
+  .reg .end a.src:hover,.reg .end a.src:focus-visible{ color:var(--fg) }
+  .reg .end a.paper{ color:var(--muted) }
+  .reg .end a.paper:hover,.reg .end a.paper:focus-visible{ color:var(--fg) }
+
+  /* ---- STATUS REGISTER (merged PRs) ---- */
+  .statusreg{ border:1px solid var(--rule); margin-top:1rem }
+  .statusreg .rhead{
+    display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:.3rem .8rem;
+    padding:.35rem .6rem; border-bottom:1px solid var(--rule);
+    background-image:repeating-linear-gradient(45deg, var(--hair) 0, var(--hair) 1px, transparent 1px, transparent 6px);
+  }
+  .statusreg .rhead .rname{ font-weight:700; letter-spacing:.05em; background:var(--bg); padding:0 .2rem }
+  .statusreg .rhead .rw{ color:var(--muted); font-size:.82rem; background:var(--bg); padding:0 .2rem }
+  .statusreg ul{ list-style:none; margin:0; padding:0 }
+  .statusreg li{
+    display:grid; grid-template-columns:1.4rem minmax(0,1fr) auto;
+    align-items:baseline; gap:.55rem; padding:.2rem .6rem; border-top:1px solid var(--hair);
+  }
+  .statusreg li:first-child{ border-top:0 }
+  .statusreg .setbit{ font-weight:700 }       /* ■ merged */
+  .statusreg .clrbit{ color:var(--muted) }     /* □ open   */
+  .statusreg .repo{ min-width:0 }
+  .statusreg .repo a{ font-weight:700 }
+  .statusreg .repo .d{ color:var(--muted) }
+  .statusreg .stbadge{ justify-self:end; white-space:nowrap; letter-spacing:.05em; font-size:.8rem }
+  .statusreg .merged{ background:var(--fg); color:var(--bg); font-weight:700; padding:0 .35rem }
+  .statusreg .open{ color:var(--muted) }
+  .legend{ color:var(--muted); font-size:.8rem; margin:.5rem 0 0; letter-spacing:.04em }
+
+  /* ---- ordering info / footer ---- */
+  footer{ margin-top:1.8rem; border-top:2px solid var(--rule); padding-top:1rem; color:var(--muted) }
+  footer h2{ margin-bottom:.6rem }
+  footer .orow{ display:flex; flex-wrap:wrap; gap:.2rem .6rem; align-items:baseline; padding:.15rem 0 }
+  footer .orow .of{ font-weight:700; color:var(--fg); min-width:11rem; letter-spacing:.04em }
+  footer .links a{ color:var(--fg); font-weight:700 }
+  footer .copy{ margin-top:.9rem; padding-top:.7rem; border-top:1px solid var(--hair); letter-spacing:.04em }
+
+  /* ---- reveal (JS only) ---- */
+  .play .section-anim{ opacity:0; transform:translateY(2px); animation:fin .3s ease forwards }
+  @keyframes fin{ to{ opacity:1; transform:none } }
+
+  @media (max-width:46rem){
     body{ font-size:13.5px }
-    /* line 1: verb · name · tags   |   line 2: description (full width, indented) */
-    .row{ grid-template-columns:2.7rem 1fr auto; row-gap:.04rem; padding:.3rem 0 }
-    .row .desc{ grid-column:1 / -1; padding-left:2.7rem; white-space:normal; text-overflow:clip }
-    .desc::before{ display:none }
-    .desc span{ background:none; padding:0 }
-    .deps{ font-size:.92em }
+    /* memory-map: collapse table to stacked cards */
+    .mm thead{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap }
+    .mm caption{ display:block; width:100%; text-align:left; padding:.1rem 0 .4rem; white-space:normal }
+    .mm,.mm tbody,.mm tr,.mm th,.mm td{ display:block; width:100% }
+    .mm tbody tr{ border:1px solid var(--rule); margin-bottom:.6rem; padding:.2rem .1rem }
+    .mm tbody tr:hover{ background:transparent }
+    .mm th,.mm td{ border:0; padding:.18rem .55rem }
+    .mm td[data-lbl]::before, .mm th[data-lbl]::before{
+      content:attr(data-lbl) "  "; color:var(--muted); font-weight:400;
+    }
+    .reg ul.fields > li{ grid-template-columns:auto 1fr; row-gap:.1rem }
+    .reg ul.fields > li .end{ grid-column:1 / -1; justify-self:start }
+    .statusreg li{ grid-template-columns:1.4rem 1fr; row-gap:.05rem }
+    .statusreg .stbadge{ grid-column:2; justify-self:start }
   }
   @media (prefers-reduced-motion:reduce){
     .caret{ animation:none }
-    .play .line{ opacity:1; transform:none; animation:none }
+    .play .section-anim{ opacity:1; transform:none; animation:none }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="term">
-  <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="title">ultramcu@metal: ~/portfolio — make</span></div>
-  <div class="pad">
+<div class="doc">
 
-  <!-- ===== masthead ===== -->
-  <header>
-    <div class="boot" aria-hidden="true">[0.000] ULTRA·MCU ▸ power-on reset <span class="ok">OK</span>
-[0.001] cpu: P89C51 ▸ 8051 core @ 11.0592 MHz ▸ console up</div>
-    <h1>ULTRA·MCU</h1>
-    <p class="tag-line"># C, MCUs, AI-harnessing, bug hunting.</p>
-    <p class="run prompt"><b>ultramcu@metal</b>:<b>~/portfolio</b>$ <b>make all</b></p>
-
-    <nav class="deps" aria-label="Sections">
-<span class="c">all ─┬─ </span><a href="#demos">demos</a><span class="c">     ▸ live in your browser</span>
-<span class="c">     ├─ </span><a href="#dart">dart</a><span class="c">      ▸ pub.dev ×7</span>
-<span class="c">     ├─ </span><a href="#go">go</a><span class="c">        ▸ pkg.go.dev ×6</span>
-<span class="c">     ├─ </span><a href="#tools">tools</a><span class="c">     ▸ claude-code</span>
-<span class="c">     ├─ </span><a href="#firmware">firmware</a><span class="c">  ▸ C / embedded ×10</span>
-<span class="c">     ├─ </span><a href="#research">research</a><span class="c">  ▸ IEEE ×2</span>
-<span class="c">     └─ </span><a href="#upstream">upstream</a><span class="c">  ▸ merged PRs ×11</span></nav>
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="mast pad">
+    <div class="top">
+      <span>ULTRA·MCU SEMICONDUCTOR</span>
+      <span>DS-001 · STATUS: PRODUCTION</span>
+      <span>REV. A — 2026</span>
+    </div>
+    <h1 class="part">ULTRAMCU-1<span class="rev">Rev. A — 2026</span></h1>
+    <p class="descfield"><span class="fname">Description:</span><span class="fval"># C, MCUs, AI-harnessing, bug hunting.</span></p>
+    <p class="descfield muted" style="font-size:.82rem;letter-spacing:.05em">
+      <span class="hex">Single-chip developer portfolio · 8 pub.dev pkgs · 6 pkg.go.dev libs · 10 firmware · 2 IEEE artifacts · 11 upstream patches · zero dependencies.</span>
+    </p>
   </header>
 
+  <div class="pad">
   <main>
-  <!-- ===== demos ===== -->
-  <section id="demos">
-    <div class="bar">▌ make demos<span class="count">// running — open in your browser</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">SERVE</span><a class="name" href="https://pub.dev/packages/thai_promptpay_flutter">thai_promptpay_flutter</a><span class="desc"><span>PromptPay (EMVCo) QR widgets — gallery + decode demo</span></span><span class="end"><a class="chip" href="https://ultramcu.github.io/thai_promptpay_flutter.dart/">▶ LIVE</a><a class="src" href="https://github.com/ultramcu/thai_promptpay_flutter.dart">[src]</a></span></div>
-      <div class="row line"><span class="verb">SERVE</span><a class="name" href="https://pub.dev/packages/thai_provinces_flutter">thai_provinces_flutter</a><span class="desc"><span>Cascading Thai address picker — every widget, interactive</span></span><span class="end"><a class="chip" href="https://ultramcu.github.io/thai_provinces_flutter.dart/">▶ LIVE</a><a class="src" href="https://github.com/ultramcu/thai_provinces_flutter.dart">[src]</a></span></div>
-    </div>
+
+  <!-- ===================== §1 FEATURES ===================== -->
+  <section id="features" class="section-anim">
+    <h2>§1 &nbsp;KEY FEATURES</h2>
+    <ul class="features" aria-label="Key features">
+      <li><span class="bullet">▸</span><span class="ftext"><b>Power-on reset OK</b> <span class="hex">— ULTRA·MCU core brought up clean</span></span></li>
+      <li><span class="bullet">▸</span><span class="ftext"><b>CPU: P89C51</b> <span class="hex">— 8051 core @ 11.0592 MHz, console up</span></span></li>
+      <li><span class="bullet">▸</span><span class="ftext"><b>insmod c.ko</b> <span class="fdot">·········</span> close to the metal</span></li>
+      <li><span class="bullet">▸</span><span class="ftext"><b>insmod mcu.ko</b> <span class="fdot">·······</span> bare-metal native</span></li>
+      <li><span class="bullet">▸</span><span class="ftext"><b>insmod go.ko</b> <span class="fdot">········</span> ships tested libs on pkg.go.dev</span></li>
+      <li><span class="bullet">▸</span><span class="ftext"><b>harness</b> <span class="fdot">·············</span> AI co-proc attached ▸ I command, it executes</span></li>
+      <li><span class="bullet">▸</span><span class="ftext"><b>bughunter: scan</b> <span class="fdot">·····</span> reproducible fixes, upstreamed</span></li>
+    </ul>
+    <p class="features"><span class="ready">ready ▸ <span class="caret">_</span></span></p>
   </section>
 
-  <!-- ===== dart ===== -->
-  <section id="dart">
-    <div class="bar">▌ make dart<span class="count">// Thai Dart/Flutter · pub.dev</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_provinces">thai_provinces</a><span class="desc"><span>TH province/district/subdistrict + postal — data core</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_provinces.dart">[src]</a></span></div>
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_provinces_flutter">thai_provinces_flutter</a><span class="desc"><span>cascading address picker widgets, no codegen</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_provinces_flutter.dart">[src]</a></span></div>
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_provinces_geo">thai_provinces_geo</a><span class="desc"><span>offline GPS reverse-geocoding (lat/lng → area)</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_provinces_geo.dart">[src]</a></span></div>
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/form_builder_thai_provinces">form_builder_thai_provinces</a><span class="desc"><span>flutter_form_builder address field adapter</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/form_builder_thai_provinces">[src]</a></span></div>
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thainum">thainum</a><span class="desc"><span>Thai number toolkit — numerals, baht text, reverse parse</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thainum.dart">[src]</a></span></div>
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_promptpay">thai_promptpay</a><span class="desc"><span>PromptPay EMVCo QR codec — encode + decode + CRC</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_promptpay.dart">[src]</a></span></div>
-      <div class="row line"><span class="verb">DART</span><a class="name" href="https://pub.dev/packages/thai_promptpay_flutter">thai_promptpay_flutter</a><span class="desc"><span>PromptPay QR widgets (built on the codec + qr_flutter)</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/thai_promptpay_flutter.dart">[src]</a></span></div>
-    </div>
+  <!-- ===================== §2 BLOCK DIAGRAM ===================== -->
+  <section id="block" class="section-anim">
+    <h2>§2 &nbsp;BLOCK DIAGRAM</h2>
+    <figure>
+      <div class="fig"><pre aria-label="Block diagram: CORE with buses to peripheral blocks">                  ┌──────────────────────────┐
+                  │     [ <a href="#features">CORE</a> ]  ULTRAMCU-1   │
+                  │  8051 · AI-harness · BDD │
+                  └─┬───┬───────┬───────┬──┬─┘
+       FLASH bus ───┘   │       │       │  └─── PERIPH bus
+     ┌────────────┐ ┌───┴────┐ ┌┴──────┐ ┌──────┴─────┐ ┌──────────┐
+     │ <a href="#reg-dart">DART/</a>      │ │ <a href="#reg-go">GO·LIB</a> │ │ <a href="#reg-fw">C/</a>     │ │ <a href="#reg-research">RESEARCH</a>   │ │ <a href="#status">UPSTREAM</a> │
+     │ <a href="#reg-dart">FLUTTER</a>    │ │        │ │ <a href="#reg-fw">FIRMWARE</a>│ │ <a href="#reg-research">·ROM</a>       │ │ <a href="#status">·PR</a>      │
+     │ pub.dev ×7 │ │ go ×6  │ │ C  ×10 │ │ IEEE ×2    │ │ merged   │
+     └─────┬──────┘ └────────┘ └────────┘ └────────────┘ └──────────┘
+           │
+     ┌─────┴────────────────────────────────────────────────┐
+     │ <a href="#pinout">PINOUT</a> ▸ 2 LIVE demo pins — run in your browser     │
+     └────────────────────────────────────────────────────────┘</pre></div>
+      <figcaption>Fig. 1 — Functional block diagram (each block links to its register section)</figcaption>
+    </figure>
   </section>
 
-  <!-- ===== go ===== -->
-  <section id="go">
-    <div class="bar">▌ make go<span class="count">// Go libraries · pkg.go.dev</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-dijkstra">go-dijkstra</a><span class="desc"><span>shortest path — Dijkstra + goal-directed A*, dep-free</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-dijkstra">[src]</a></span></div>
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-ict">go-ict</a><span class="desc"><span>serial drivers: L77 bill acceptor + SP1 thermal printer</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-ict">[src]</a></span></div>
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-imgfeed">go-imgfeed</a><span class="desc"><span>provider-agnostic image loader/feed for LLMs</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-imgfeed">[src]</a></span></div>
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-thaiaddress">go-thaiaddress</a><span class="desc"><span>TH admin areas + postal codes (embedded, no DB)</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-thaiaddress">[src]</a></span></div>
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/go-thainum">go-thainum</a><span class="desc"><span>Thai number toolkit for Go — words, baht text, parse</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/go-thainum">[src]</a></span></div>
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://pkg.go.dev/github.com/ultramcu/mcpharness">mcpharness</a><span class="desc"><span>testing toolkit for Go MCP server authors</span></span><span class="end"><span class="ok">[ OK ]</span><a class="src" href="https://github.com/ultramcu/mcpharness">[src]</a></span></div>
-    </div>
+  <!-- ===================== §3 PINOUT ===================== -->
+  <section id="pinout" class="section-anim">
+    <h2>§3 &nbsp;PINOUT <span class="sub">// highlighted pins = live in your browser</span></h2>
+    <figure>
+      <div class="fig pinpkg"><pre aria-label="Chip pinout: two highlighted live-demo pins">                 ULTRAMCU-1  ·  DIP-8
+              ┌───────────·∪·───────────┐
+       VDD  1 ┤                         ├ 8  GND
+       GP0  2 ┤   ┌───────────────────┐ ├ 7  GP3
+   <a class="pin" href="https://ultramcu.github.io/thai_promptpay_flutter.dart/">▶LIVE</a> 3 ┤   │   ULTRA · MCU     │ ├ 6  <a class="pin" href="https://ultramcu.github.io/thai_provinces_flutter.dart/">▶LIVE</a>
+       GP1  4 ┤   └───────────────────┘ ├ 5  GP2
+              └─────────────────────────┘</pre></div>
+      <figcaption>Fig. 2 — Pin assignment (DIP-8). Inverted pins are interactive demos.</figcaption>
+    </figure>
+    <p class="pinnote">
+      PIN 3 → <a href="https://pub.dev/packages/thai_promptpay_flutter"><b>thai_promptpay_flutter</b></a>
+      — PromptPay (EMVCo) QR widgets — gallery + decode demo
+      [<a href="https://ultramcu.github.io/thai_promptpay_flutter.dart/">▶ LIVE</a>]
+      [<a href="https://github.com/ultramcu/thai_promptpay_flutter.dart">src</a>]
+      <br>
+      PIN 6 → <a href="https://pub.dev/packages/thai_provinces_flutter"><b>thai_provinces_flutter</b></a>
+      — Cascading Thai address picker — every widget, interactive
+      [<a href="https://ultramcu.github.io/thai_provinces_flutter.dart/">▶ LIVE</a>]
+      [<a href="https://github.com/ultramcu/thai_provinces_flutter.dart">src</a>]
+    </p>
   </section>
 
-  <!-- ===== tools ===== -->
-  <section id="tools">
-    <div class="bar">▌ make tools<span class="count">// Claude Code / harness</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">TOOL</span><a class="name" href="https://github.com/ultramcu/claude-compact-memory">claude-compact-memory</a><span class="desc"><span>Claude Code plugin — save/restore work across /compact</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">TOOL</span><a class="name" href="https://github.com/ultramcu/claude-usage-display">claude-usage-display</a><span class="desc"><span>always-on Claude usage display on an M5Stack Core2</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-    </div>
+  <!-- ===================== §4 MEMORY MAP ===================== -->
+  <section id="memmap" class="section-anim">
+    <h2>§4 &nbsp;MEMORY MAP <span class="sub">// address space overview</span></h2>
+    <table class="mm">
+      <caption>Table 1 — Address regions → projects (every row links out)</caption>
+      <thead>
+        <tr>
+          <th scope="col">Address range</th>
+          <th scope="col">Region</th>
+          <th scope="col">Project</th>
+          <th scope="col">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row" class="addr" data-lbl="Addr">0x0000–0x06FF</th>
+          <td class="region" data-lbl="Region">FLASH / DART</td>
+          <td class="proj" data-lbl="Project"><a href="https://pub.dev/publishers/ultramcu.github.io/packages">pub.dev ×7</a></td>
+          <td data-lbl="Desc">Thai Dart/Flutter packages — see §5.1</td>
+        </tr>
+        <tr>
+          <th scope="row" class="addr" data-lbl="Addr">0x0700–0x0CFF</th>
+          <td class="region" data-lbl="Region">GO·LIB</td>
+          <td class="proj" data-lbl="Project"><a href="https://pkg.go.dev/github.com/ultramcu">pkg.go.dev ×6</a></td>
+          <td data-lbl="Desc">Dep-free Go libraries — see §5.2</td>
+        </tr>
+        <tr>
+          <th scope="row" class="addr" data-lbl="Addr">0x0D00–0x0DFF</th>
+          <td class="region" data-lbl="Region">TOOLS</td>
+          <td class="proj" data-lbl="Project"><a href="https://github.com/ultramcu">claude-code ×2</a></td>
+          <td data-lbl="Desc">Claude Code harness tooling — see §5.3</td>
+        </tr>
+        <tr>
+          <th scope="row" class="addr" data-lbl="Addr">0x0E00–0x17FF</th>
+          <td class="region" data-lbl="Region">C / FW</td>
+          <td class="proj" data-lbl="Project"><a href="https://github.com/ultramcu">firmware ×10</a></td>
+          <td data-lbl="Desc">Embedded C / MCU firmware — see §5.4</td>
+        </tr>
+        <tr>
+          <th scope="row" class="addr" data-lbl="Addr">0x1800–0x18FF</th>
+          <td class="region" data-lbl="Region">RESEARCH·ROM</td>
+          <td class="proj" data-lbl="Project"><a href="https://github.com/ultramcu">IEEE ×2</a></td>
+          <td data-lbl="Desc">Published research artifacts — see §5.5</td>
+        </tr>
+        <tr>
+          <th scope="row" class="addr" data-lbl="Addr">0xFF00–0xFFFF</th>
+          <td class="region" data-lbl="Region">PR·REGISTERS</td>
+          <td class="proj" data-lbl="Project"><a href="#status">upstream ×11</a></td>
+          <td data-lbl="Desc">Patches merged into other trees — see §5.6</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 
-  <!-- ===== firmware ===== -->
-  <section id="firmware">
-    <div class="bar">▌ make firmware<span class="count">// C / embedded — close to the metal</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/c-ulib">c-ulib</a><span class="desc"><span>small umbrella of C99 libraries for MCU use</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/micro-json">micro-json</a><span class="desc"><span>tiny byte-fed JSON parser for small MCUs, no heap</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">LD</span><a class="name" href="https://github.com/ultramcu/c-ARM-bootload">c-ARM-bootload</a><span class="desc"><span>pure-C99 ARM bootloader, Motorola S-records</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/c-TM4C129x-AES">c-TM4C129x-AES</a><span class="desc"><span>HW-accelerated AES-128-CBC on TI TM4C129x</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/c-B5800-gpio">c-B5800-gpio</a><span class="desc"><span>drive QY-B5800 industrial-PC GPIO via inb/outb</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">CXX</span><a class="name" href="https://github.com/ultramcu/acom-digimon">acom-digimon</a><span class="desc"><span>M5Core2 firmware talking to real Digimon V-Pets</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">CC</span><a class="name" href="https://github.com/ultramcu/QHY-Capture">QHY-Capture</a><span class="desc"><span>single-frame capture for QHYCCD astronomy cameras</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">CXX</span><a class="name" href="https://github.com/ultramcu/Open32-AQI">Open32-AQI</a><span class="desc"><span>ESP32 air-quality station — SPS30 → US EPA AQI</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">GO</span><a class="name" href="https://github.com/ultramcu/v20bits-reader">v20bits-reader</a><span class="desc"><span>Orange Pi: 20 digital inputs via MCP23008 + MQTT</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">SH</span><a class="name" href="https://github.com/ultramcu/FR24-Feed-monitor">FR24-Feed-monitor</a><span class="desc"><span>graduated-recovery monitor for FR24 feeders (RPi/SDR)</span></span><span class="end"><span class="ok">[ OK ]</span></span></div>
+  <!-- ===================== §5 REGISTER DESCRIPTIONS ===================== -->
+  <section id="registers" class="section-anim">
+    <h2>§5 &nbsp;REGISTER DESCRIPTIONS</h2>
+
+    <!-- §5.1 DART -->
+    <div class="reg" id="reg-dart">
+      <div class="rhead"><span class="rname">§5.1 &nbsp;FLASH / DART</span><span class="rw">R/W: LIVE · pub.dev ×7</span></div>
+      <p class="rdesc">Thai Dart/Flutter packages. Bit-field: data core → widgets → adapters.</p>
+      <ul class="fields">
+        <li><span class="bit">[7]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_provinces">thai_provinces</a> <span class="ds">— TH province/district/subdistrict + postal — data core</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_provinces.dart">[src]</a></span></li>
+        <li><span class="bit">[6]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_provinces_flutter">thai_provinces_flutter</a> <span class="ds">— cascading address picker widgets, no codegen</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_provinces_flutter.dart">[src]</a></span></li>
+        <li><span class="bit">[5]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_provinces_geo">thai_provinces_geo</a> <span class="ds">— offline GPS reverse-geocoding (lat/lng → area)</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_provinces_geo.dart">[src]</a></span></li>
+        <li><span class="bit">[4]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/form_builder_thai_provinces">form_builder_thai_provinces</a> <span class="ds">— flutter_form_builder address field adapter</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/form_builder_thai_provinces">[src]</a></span></li>
+        <li><span class="bit">[3]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thainum">thainum</a> <span class="ds">— Thai number toolkit — numerals, baht text, reverse parse</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thainum.dart">[src]</a></span></li>
+        <li><span class="bit">[2]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_promptpay">thai_promptpay</a> <span class="ds">— PromptPay EMVCo QR codec — encode + decode + CRC</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_promptpay.dart">[src]</a></span></li>
+        <li><span class="bit">[1]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_promptpay_flutter">thai_promptpay_flutter</a> <span class="ds">— PromptPay QR widgets (built on the codec + qr_flutter)</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_promptpay_flutter.dart">[src]</a></span></li>
+      </ul>
     </div>
+
+    <!-- §5.2 GO -->
+    <div class="reg" id="reg-go">
+      <div class="rhead"><span class="rname">§5.2 &nbsp;GO·LIB</span><span class="rw">R/W: lib · pkg.go.dev ×6</span></div>
+      <p class="rdesc">Dep-free Go libraries. Bit-field: algorithms, drivers, AI/MCP tooling.</p>
+      <ul class="fields">
+        <li><span class="bit">[5]</span><span class="fld"><a class="nm" href="https://pkg.go.dev/github.com/ultramcu/go-dijkstra">go-dijkstra</a> <span class="ds">— shortest path — Dijkstra + goal-directed A*, dep-free</span></span><span class="end"><span class="st">lib</span><a class="src" href="https://github.com/ultramcu/go-dijkstra">[src]</a></span></li>
+        <li><span class="bit">[4]</span><span class="fld"><a class="nm" href="https://pkg.go.dev/github.com/ultramcu/go-ict">go-ict</a> <span class="ds">— serial drivers: L77 bill acceptor + SP1 thermal printer</span></span><span class="end"><span class="st">lib</span><a class="src" href="https://github.com/ultramcu/go-ict">[src]</a></span></li>
+        <li><span class="bit">[3]</span><span class="fld"><a class="nm" href="https://pkg.go.dev/github.com/ultramcu/go-imgfeed">go-imgfeed</a> <span class="ds">— provider-agnostic image loader/feed for LLMs</span></span><span class="end"><span class="st">lib</span><a class="src" href="https://github.com/ultramcu/go-imgfeed">[src]</a></span></li>
+        <li><span class="bit">[2]</span><span class="fld"><a class="nm" href="https://pkg.go.dev/github.com/ultramcu/go-thaiaddress">go-thaiaddress</a> <span class="ds">— TH admin areas + postal codes (embedded, no DB)</span></span><span class="end"><span class="st">lib</span><a class="src" href="https://github.com/ultramcu/go-thaiaddress">[src]</a></span></li>
+        <li><span class="bit">[1]</span><span class="fld"><a class="nm" href="https://pkg.go.dev/github.com/ultramcu/go-thainum">go-thainum</a> <span class="ds">— Thai number toolkit for Go — words, baht text, parse</span></span><span class="end"><span class="st">lib</span><a class="src" href="https://github.com/ultramcu/go-thainum">[src]</a></span></li>
+        <li><span class="bit">[0]</span><span class="fld"><a class="nm" href="https://pkg.go.dev/github.com/ultramcu/mcpharness">mcpharness</a> <span class="ds">— testing toolkit for Go MCP server authors</span></span><span class="end"><span class="st">lib</span><a class="src" href="https://github.com/ultramcu/mcpharness">[src]</a></span></li>
+      </ul>
+    </div>
+
+    <!-- §5.3 TOOLS -->
+    <div class="reg" id="reg-tools">
+      <div class="rhead"><span class="rname">§5.3 &nbsp;TOOLS</span><span class="rw">R/W: tool · Claude Code / harness ×2</span></div>
+      <p class="rdesc">Claude Code / harness tooling. Bit-field: memory plugin, hardware usage display.</p>
+      <ul class="fields">
+        <li><span class="bit">[1]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/claude-compact-memory">claude-compact-memory</a> <span class="ds">— Claude Code plugin — save/restore work across /compact</span></span><span class="end"><span class="st">tool</span></span></li>
+        <li><span class="bit">[0]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/claude-usage-display">claude-usage-display</a> <span class="ds">— always-on Claude usage display on an M5Stack Core2</span></span><span class="end"><span class="st">tool</span></span></li>
+      </ul>
+    </div>
+
+    <!-- §5.4 FIRMWARE -->
+    <div class="reg" id="reg-fw">
+      <div class="rhead"><span class="rname">§5.4 &nbsp;C / FIRMWARE</span><span class="rw">R/W: firmware · C / embedded ×10</span></div>
+      <p class="rdesc">Embedded C / MCU firmware — close to the metal.</p>
+      <ul class="fields">
+        <li><span class="bit">[9]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/c-ulib">c-ulib</a> <span class="ds">— small umbrella of C99 libraries for MCU use</span></span><span class="end"><span class="st">CC</span></span></li>
+        <li><span class="bit">[8]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/micro-json">micro-json</a> <span class="ds">— tiny byte-fed JSON parser for small MCUs, no heap</span></span><span class="end"><span class="st">CC</span></span></li>
+        <li><span class="bit">[7]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/c-ARM-bootload">c-ARM-bootload</a> <span class="ds">— pure-C99 ARM bootloader, Motorola S-records</span></span><span class="end"><span class="st">LD</span></span></li>
+        <li><span class="bit">[6]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/c-TM4C129x-AES">c-TM4C129x-AES</a> <span class="ds">— HW-accelerated AES-128-CBC on TI TM4C129x</span></span><span class="end"><span class="st">CC</span></span></li>
+        <li><span class="bit">[5]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/c-B5800-gpio">c-B5800-gpio</a> <span class="ds">— drive QY-B5800 industrial-PC GPIO via inb/outb</span></span><span class="end"><span class="st">CC</span></span></li>
+        <li><span class="bit">[4]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/acom-digimon">acom-digimon</a> <span class="ds">— M5Core2 firmware talking to real Digimon V-Pets</span></span><span class="end"><span class="st">CXX</span></span></li>
+        <li><span class="bit">[3]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/QHY-Capture">QHY-Capture</a> <span class="ds">— single-frame capture for QHYCCD astronomy cameras</span></span><span class="end"><span class="st">CC</span></span></li>
+        <li><span class="bit">[2]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/Open32-AQI">Open32-AQI</a> <span class="ds">— ESP32 air-quality station — SPS30 → US EPA AQI</span></span><span class="end"><span class="st">CXX</span></span></li>
+        <li><span class="bit">[1]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/v20bits-reader">v20bits-reader</a> <span class="ds">— Orange Pi: 20 digital inputs via MCP23008 + MQTT</span></span><span class="end"><span class="st">GO</span></span></li>
+        <li><span class="bit">[0]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/FR24-Feed-monitor">FR24-Feed-monitor</a> <span class="ds">— graduated-recovery monitor for FR24 feeders (RPi/SDR)</span></span><span class="end"><span class="st">SH</span></span></li>
+      </ul>
+    </div>
+
+    <!-- §5.5 RESEARCH -->
+    <div class="reg" id="reg-research">
+      <div class="rhead"><span class="rname">§5.5 &nbsp;RESEARCH·ROM</span><span class="rw">R/W: read-only · IEEE ×2</span></div>
+      <p class="rdesc">Published research artifacts (read-only mask ROM).</p>
+      <ul class="fields">
+        <li><span class="bit">[1]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/ros-l2-aes">ros-l2-aes</a> <span class="ds">— Layer-2 AES-CBC for ROS1 topics — ICSEC 2023</span></span><span class="end"><a class="paper" href="https://ieeexplore.ieee.org/document/10329645">[paper]</a><span class="st">DOC</span></span></li>
+        <li><span class="bit">[0]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/api-lang-bench">api-lang-bench</a> <span class="ds">— PHP/Python/Node/Go REST API benchmark — InCIT 2023</span></span><span class="end"><a class="paper" href="https://ieeexplore.ieee.org/document/10413079">[paper]</a><span class="st">DOC</span></span></li>
+      </ul>
+    </div>
+
+    <!-- §5.6 STATUS REGISTER — merged PRs -->
+    <div class="statusreg" id="status">
+      <div class="rhead"><span class="rname">§5.6 &nbsp;UPSTREAM_SR — PR STATUS REGISTER</span><span class="rw">R/O · 11 bits · reproducible fixes</span></div>
+      <ul aria-label="Upstream pull request status register">
+        <li><span class="setbit" aria-hidden="true">■</span><span class="repo"><a href="https://github.com/eclipse-paho/paho.golang">eclipse-paho/paho.golang</a> <span class="d">— MQTT v5 Go — leaks, quota underflow, DeleteRoute</span></span><span class="stbadge"><span class="merged">MERGED</span></span></li>
+        <li><span class="setbit" aria-hidden="true">■</span><span class="repo"><a href="https://github.com/eclipse-paho/paho.mqtt.golang">eclipse-paho/paho.mqtt.golang</a> <span class="d">— MQTT v3 Go — spurious BUG log, FileStore fail-fast</span></span><span class="stbadge"><span class="merged">MERGED</span></span></li>
+        <li><span class="setbit" aria-hidden="true">■</span><span class="repo"><a href="https://github.com/golang-jwt/jwt">golang-jwt/jwt</a> <span class="d">— MapClaims GetAudience type validation</span></span><span class="stbadge"><span class="merged">MERGED</span></span></li>
+        <li><span class="clrbit" aria-hidden="true">□</span><span class="repo"><a href="https://github.com/jackc/pgx">jackc/pgx</a> <span class="d">— pgtype geometry parsers — panic → error</span></span><span class="stbadge"><span class="open">[ open ]</span></span></li>
+        <li><span class="clrbit" aria-hidden="true">□</span><span class="repo"><a href="https://github.com/labstack/echo">labstack/echo</a> <span class="d">— gzip Writer io.Writer-contract fix</span></span><span class="stbadge"><span class="open">[ open ]</span></span></li>
+        <li><span class="setbit" aria-hidden="true">■</span><span class="repo"><a href="https://github.com/gocarina/gocsv">gocarina/gocsv</a> <span class="d">— partial tag prefix-match column bug</span></span><span class="stbadge"><span class="merged">MERGED</span></span></li>
+        <li><span class="setbit" aria-hidden="true">■</span><span class="repo"><a href="https://github.com/DeRuina/timberjack">DeRuina/timberjack</a> <span class="d">— compressed-backup umask + BackupTimeFormat</span></span><span class="stbadge"><span class="merged">MERGED</span></span></li>
+        <li><span class="setbit" aria-hidden="true">■</span><span class="repo"><a href="https://github.com/bugst/go-serial">bugst/go-serial</a> <span class="d">— enumerator EOF abort + Linux VID/PID uppercase</span></span><span class="stbadge"><span class="merged">MERGED</span></span></li>
+        <li><span class="clrbit" aria-hidden="true">□</span><span class="repo"><a href="https://github.com/imaNNeo/fl_chart">imaNNeo/fl_chart</a> <span class="d">— touched-stack index + toDashedPath RangeError</span></span><span class="stbadge"><span class="open">[ open ]</span></span></li>
+        <li><span class="clrbit" aria-hidden="true">□</span><span class="repo"><a href="https://github.com/cfug/dio">cfug/dio</a> <span class="d">— QueuedInterceptor cancel-stall + FormData.clone</span></span><span class="stbadge"><span class="open">[ open ]</span></span></li>
+        <li><span class="clrbit" aria-hidden="true">□</span><span class="repo"><a href="https://github.com/warpdotdev/warp">warpdotdev/warp</a> <span class="d">— render Thai/Lao SARA AM on its consonant</span></span><span class="stbadge"><span class="open">[ open ]</span></span></li>
+      </ul>
+    </div>
+    <p class="legend">■ = bit set (MERGED) · □ = bit clear (open) — 7 of 11 set. PASS — pub.dev 160/160 · Go Report A+ · firmware builds clean.</p>
   </section>
 
-  <!-- ===== research ===== -->
-  <section id="research">
-    <div class="bar">▌ make research<span class="count">// IEEE artifacts</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">DOC</span><a class="name" href="https://github.com/ultramcu/ros-l2-aes">ros-l2-aes</a><span class="desc"><span>Layer-2 AES-CBC for ROS1 topics — ICSEC 2023</span></span><span class="end"><a class="src" href="https://ieeexplore.ieee.org/document/10329645">[paper]</a><span class="ok">[ OK ]</span></span></div>
-      <div class="row line"><span class="verb">DOC</span><a class="name" href="https://github.com/ultramcu/api-lang-bench">api-lang-bench</a><span class="desc"><span>PHP/Python/Node/Go REST API benchmark — InCIT 2023</span></span><span class="end"><a class="src" href="https://ieeexplore.ieee.org/document/10413079">[paper]</a><span class="ok">[ OK ]</span></span></div>
-    </div>
-  </section>
-
-  <!-- ===== upstream ===== -->
-  <section id="upstream">
-    <div class="bar">▌ make upstream<span class="count">// reproducible fixes, merged into other people's trees</span></div>
-    <div class="rows">
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/eclipse-paho/paho.golang">eclipse-paho/paho.golang</a><span class="desc"><span>MQTT v5 Go — leaks, quota underflow, DeleteRoute</span></span><span class="end"><span class="chip">MERGED</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/eclipse-paho/paho.mqtt.golang">eclipse-paho/paho.mqtt.golang</a><span class="desc"><span>MQTT v3 Go — spurious BUG log, FileStore fail-fast</span></span><span class="end"><span class="chip">MERGED</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/golang-jwt/jwt">golang-jwt/jwt</a><span class="desc"><span>MapClaims GetAudience type validation</span></span><span class="end"><span class="chip">MERGED</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/jackc/pgx">jackc/pgx</a><span class="desc"><span>pgtype geometry parsers — panic → error</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/labstack/echo">labstack/echo</a><span class="desc"><span>gzip Writer io.Writer-contract fix</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/gocarina/gocsv">gocarina/gocsv</a><span class="desc"><span>partial tag prefix-match column bug</span></span><span class="end"><span class="chip">MERGED</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/DeRuina/timberjack">DeRuina/timberjack</a><span class="desc"><span>compressed-backup umask + BackupTimeFormat</span></span><span class="end"><span class="chip">MERGED</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/bugst/go-serial">bugst/go-serial</a><span class="desc"><span>enumerator EOF abort + Linux VID/PID uppercase</span></span><span class="end"><span class="chip">MERGED</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/imaNNeo/fl_chart">imaNNeo/fl_chart</a><span class="desc"><span>touched-stack index + toDashedPath RangeError</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/cfug/dio">cfug/dio</a><span class="desc"><span>QueuedInterceptor cancel-stall + FormData.clone</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
-      <div class="row line"><span class="verb">PATCH</span><a class="name" href="https://github.com/warpdotdev/warp">warpdotdev/warp</a><span class="desc"><span>render Thai/Lao SARA AM on its consonant</span></span><span class="end"><span class="ok">[ open ]</span></span></div>
-    </div>
-  </section>
-
-  <!-- ===== result ===== -->
-  <section class="result line" aria-label="result">
-    <div><span class="prompt"><b>$</b></span> make test</div>
-    <div class="pass">  ▸ PASS — pub.dev 160/160 · Go Report A+ · firmware builds clean</div>
-    <div class="meta">  ▸ 8 pub.dev pkgs · 6 pkg.go.dev libs · 10 firmware · 11 upstreamed · 0 failed</div>
-    <div>make: '<b>all</b>' is up to date.</div>
-  </section>
   </main>
 
-  <!-- ===== footer ===== -->
+  <!-- ===================== §6 ORDERING INFORMATION ===================== -->
   <footer>
+    <h2>§6 &nbsp;ORDERING INFORMATION</h2>
     <div class="links">
-      <a href="https://github.com/ultramcu">github.com/ultramcu</a>
-      <a href="https://pub.dev/publishers/ultramcu.github.io/packages">pub.dev</a>
-      <a href="https://pkg.go.dev/github.com/ultramcu">pkg.go.dev</a>
+      <div class="orow"><span class="of">SOURCE / HANDLE</span><a href="https://github.com/ultramcu">github.com/ultramcu</a></div>
+      <div class="orow"><span class="of">DART DISTRIBUTOR</span><a href="https://pub.dev/publishers/ultramcu.github.io/packages">pub.dev</a></div>
+      <div class="orow"><span class="of">GO DISTRIBUTOR</span><a href="https://pkg.go.dev/github.com/ultramcu">pkg.go.dev</a></div>
+      <div class="orow"><span class="of">PACKAGE</span><span class="hex">ULTRAMCU-1 · DIP-8 · Rev. A · DS-001</span></div>
+      <div class="orow"><span class="of">LICENSE</span><span class="hex">MIT · open source</span></div>
     </div>
-    <div class="prompt"><b>ultramcu@metal</b>:<b>~</b>$ <span class="caret">_</span></div>
-    <div style="margin-top:.5rem">© 2026 ULTRA·MCU — built once, zero deps, fits in cache.</div>
+    <div class="copy">© 2026 ULTRA·MCU · zero dependencies · <span class="hex">built once, fits in cache · ultramcu@metal:~$ <span class="caret">_</span></span></div>
   </footer>
 
   </div><!-- /pad -->
-</div><!-- /term -->
+</div><!-- /doc -->
 </div><!-- /wrap -->
 
 <script>
-// Progressive enhancement only: stagger-reveal the build lines. All content is
-// already in the HTML and fully usable with JS off. Respects reduced-motion.
+// Progressive enhancement only: stagger-reveal datasheet sections.
+// All content is in the HTML and fully usable with JS off. Respects reduced-motion.
 (function(){
   try{
     var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(rm) return;
-    var main = document.querySelector('.term .pad');
-    var lines = document.querySelectorAll('.line');
-    main.classList.add('play');
+    var root = document.querySelector('.doc');
+    var secs = document.querySelectorAll('.section-anim');
+    root.classList.add('play');
     var t = 0;
-    lines.forEach(function(el){
-      t += 45;
-      el.style.animationDelay = t + 'ms';
-    });
+    secs.forEach(function(el){ t += 70; el.style.animationDelay = t + 'ms'; });
   }catch(e){ /* no-op: content already visible */ }
 })();
 </script>
