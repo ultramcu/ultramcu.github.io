@@ -218,7 +218,7 @@
     <h1 class="part">ULTRAMCU-1<span class="rev">Rev. A — 2026</span></h1>
     <p class="descfield"><span class="fname">Description:</span><span class="fval"># C, MCUs, AI-harnessing, bug hunting.</span></p>
     <p class="descfield muted" style="font-size:.82rem;letter-spacing:.05em">
-      <span class="hex">Single-chip developer portfolio · 7 pub.dev pkgs · 6 pkg.go.dev libs · 10 firmware · 2 IEEE artifacts · 15 upstream patches · zero dependencies.</span>
+      <span class="hex">Single-chip developer portfolio · 8 pub.dev pkgs · 6 pkg.go.dev libs · 10 firmware · 2 IEEE artifacts · 15 upstream patches · zero dependencies.</span>
     </p>
   </header>
 
@@ -254,7 +254,7 @@
   ┌─────┴──────┐ ┌───┴────┐ ┌────┴─────┐ ┌────┴─────┐ ┌────┴─────┐
   │ <a href="#reg-dart">DART/</a>      │ │ <a href="#reg-go">GO·LIB</a> │ │ <a href="#reg-fw">C/</a>       │ │ <a href="#reg-research">RESEARCH</a> │ │ <a href="#status">UPSTREAM</a> │
   │ <a href="#reg-dart">FLUTTER</a>    │ │        │ │ <a href="#reg-fw">FIRMWARE</a> │ │ <a href="#reg-research">·ROM</a>     │ │ <a href="#status">·PR</a>      │
-  │ pub.dev ×7 │ │ go ×6  │ │ C  ×10   │ │ IEEE ×2  │ │ merged   │
+  │ pub.dev ×8 │ │ go ×6  │ │ C  ×10   │ │ IEEE ×2  │ │ merged   │
   └─────┬──────┘ └────────┘ └──────────┘ └──────────┘ └──────────┘
         │
   ┌─────┴───────────────────────────────────────────┐
@@ -307,7 +307,7 @@
         <tr>
           <th scope="row" class="addr" data-lbl="Addr">0x0000–0x06FF</th>
           <td class="region" data-lbl="Region">FLASH / DART</td>
-          <td class="proj" data-lbl="Project"><a href="https://pub.dev/publishers/10v3n4m.cc/packages">pub.dev ×7</a></td>
+          <td class="proj" data-lbl="Project"><a href="https://pub.dev/publishers/10v3n4m.cc/packages">pub.dev ×8</a></td>
           <td data-lbl="Desc">Thai Dart/Flutter packages — see §5.1</td>
         </tr>
         <tr>
@@ -319,8 +319,8 @@
         <tr>
           <th scope="row" class="addr" data-lbl="Addr">0x0D00–0x0DFF</th>
           <td class="region" data-lbl="Region">TOOLS</td>
-          <td class="proj" data-lbl="Project"><a href="https://github.com/ultramcu">claude-code ×2</a></td>
-          <td data-lbl="Desc">Claude Code harness tooling — see §5.3</td>
+          <td class="proj" data-lbl="Project"><a href="https://github.com/ultramcu">dev tools ×3</a></td>
+          <td data-lbl="Desc">Developer tooling (API client + Claude harness) — see §5.3</td>
         </tr>
         <tr>
           <th scope="row" class="addr" data-lbl="Addr">0x0E00–0x17FF</th>
@@ -350,9 +350,10 @@
 
     <!-- §5.1 DART -->
     <div class="reg" id="reg-dart">
-      <div class="rhead"><span class="rname">§5.1 &nbsp;FLASH / DART</span><span class="rw">R/W: LIVE · pub.dev ×7</span></div>
+      <div class="rhead"><span class="rname">§5.1 &nbsp;FLASH / DART</span><span class="rw">R/W: LIVE · pub.dev ×8</span></div>
       <p class="rdesc">Thai Dart/Flutter packages. Bit-field: data core → widgets → adapters.</p>
       <ul class="fields">
+        <li><span class="bit">[8]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/sql_formatter">sql_formatter</a> <span class="ds">— SQL pretty-printer (standard / PostgreSQL / MySQL / SQLite), pure Dart</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/sql_formatter">[src]</a></span></li>
         <li><span class="bit">[7]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_provinces">thai_provinces</a> <span class="ds">— TH province/district/subdistrict + postal — data core</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_provinces.dart">[src]</a></span></li>
         <li><span class="bit">[6]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_provinces_flutter">thai_provinces_flutter</a> <span class="ds">— cascading address picker widgets, no codegen</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_provinces_flutter.dart">[src]</a></span></li>
         <li><span class="bit">[5]</span><span class="fld"><a class="nm" href="https://pub.dev/packages/thai_provinces_geo">thai_provinces_geo</a> <span class="ds">— offline GPS reverse-geocoding (lat/lng → area)</span></span><span class="end"><span class="st">LIVE</span><a class="src" href="https://github.com/ultramcu/thai_provinces_geo.dart">[src]</a></span></li>
@@ -379,9 +380,10 @@
 
     <!-- §5.3 TOOLS -->
     <div class="reg" id="reg-tools">
-      <div class="rhead"><span class="rname">§5.3 &nbsp;TOOLS</span><span class="rw">R/W: tool · Claude Code / harness ×2</span></div>
-      <p class="rdesc">Claude Code / harness tooling. Bit-field: memory plugin, hardware usage display.</p>
+      <div class="rhead"><span class="rname">§5.3 &nbsp;TOOLS</span><span class="rw">R/W: tool · dev tools ×3</span></div>
+      <p class="rdesc">Developer tooling. Bit-field: HTTP API client, Claude memory plugin, hardware usage display.</p>
       <ul class="fields">
+        <li><span class="bit">[2]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/yon">yon</a> <span class="ds">— minimal Go + Fyne desktop HTTP API client — offline, no account</span></span><span class="end"><span class="st">app</span></span></li>
         <li><span class="bit">[1]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/claude-compact-memory">claude-compact-memory</a> <span class="ds">— Claude Code plugin — save/restore work across /compact</span></span><span class="end"><span class="st">tool</span></span></li>
         <li><span class="bit">[0]</span><span class="fld"><a class="nm" href="https://github.com/ultramcu/claude-usage-display">claude-usage-display</a> <span class="ds">— always-on Claude usage display on an M5Stack Core2</span></span><span class="end"><span class="st">tool</span></span></li>
       </ul>
