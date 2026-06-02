@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>รายงานวิเคราะห์การใช้ไฟฟ้า TOU เพื่อออกแบบระบบ Solar + Battery</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1419; --card:#1a2230; --card2:#222c3d; --line:#2c3a50;
+    --txt:#e8edf4; --mut:#9fb0c5; --accent:#ffb020; --solar:#ffd24d;
+    --peak:#ff6b5e; --offpeak:#5cc8ff; --green:#46d39a; --purple:#a98bff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Segoe UI","Helvetica Neue",-apple-system,"Sarabun",sans-serif;
+    background:linear-gradient(160deg,#0c1118,#11192399 60%,#0f1419);color:var(--txt);
+    line-height:1.6;padding:0 0 60px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  header{padding:54px 0 30px;border-bottom:1px solid var(--line);margin-bottom:34px;
+    background:radial-gradient(900px 280px at 15% -10%, #ffb02022, transparent)}
+  .badge{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);border:1px solid #ffb02055;border-radius:30px;padding:5px 14px;margin-bottom:18px}
+  h1{font-size:2.15rem;font-weight:700;line-height:1.25;margin-bottom:12px}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--mut);font-size:1.02rem;max-width:760px}
+  .meta{margin-top:18px;font-size:.86rem;color:var(--mut);display:flex;gap:22px;flex-wrap:wrap}
+  .meta b{color:var(--txt);font-weight:600}
+  h2{font-size:1.35rem;margin:48px 0 6px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";width:5px;height:22px;background:var(--accent);border-radius:3px;display:inline-block}
+  .lead{color:var(--mut);margin-bottom:22px;font-size:.96rem}
+  .grid{display:grid;gap:16px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g4,.g3,.g2{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.g4,.g3,.g2{grid-template-columns:1fr}}
+  .kpi{background:linear-gradient(170deg,var(--card),var(--card2));border:1px solid var(--line);
+    border-radius:16px;padding:20px 18px;position:relative;overflow:hidden}
+  .kpi .lbl{font-size:.8rem;color:var(--mut);margin-bottom:8px}
+  .kpi .val{font-size:1.85rem;font-weight:700;line-height:1}
+  .kpi .val small{font-size:.85rem;font-weight:500;color:var(--mut)}
+  .kpi .note{font-size:.76rem;color:var(--mut);margin-top:8px}
+  .kpi.solar .val{color:var(--solar)} .kpi.peak .val{color:var(--peak)}
+  .kpi.off .val{color:var(--offpeak)} .kpi.grn .val{color:var(--green)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;margin-top:18px}
+  .chart-box{position:relative;height:340px}
+  .chart-box.tall{height:400px}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:6px}
+  th,td{text-align:right;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--mut);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+  tbody tr:hover{background:#ffffff06}
+  .tag{display:inline-block;padding:2px 9px;border-radius:6px;font-size:.78rem;font-weight:600}
+  .tag.p{background:#ff6b5e22;color:var(--peak)} .tag.o{background:#5cc8ff22;color:var(--offpeak)}
+  .tag.s{background:#ffd24d22;color:var(--solar)} .tag.g{background:#46d39a22;color:var(--green)}
+  ul.clean{list-style:none;margin-top:10px} ul.clean li{padding:8px 0 8px 28px;position:relative;color:var(--mut)}
+  ul.clean li::before{content:"▸";position:absolute;left:6px;color:var(--accent)}
+  ul.clean li b{color:var(--txt)}
+  .reco{background:linear-gradient(160deg,#1c2738,#172033);border:1px solid #34507a55;
+    border-radius:18px;padding:26px;margin-top:18px}
+  .verdict{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:12px;margin-top:14px}
+  .verdict.ok{background:#46d39a12;border:1px solid #46d39a40}
+  .verdict.warn{background:#ffb02012;border:1px solid #ffb02040}
+  .verdict .ic{font-size:1.5rem;line-height:1}
+  .verdict .t{font-weight:700;margin-bottom:3px}
+  .verdict .d{color:var(--mut);font-size:.9rem}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+  .spec{font-size:.92rem} .spec div{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .spec div span:last-child{font-weight:600;color:var(--txt)}
+  .spec div span:first-child{color:var(--mut)}
+  footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--line);color:var(--mut);font-size:.82rem}
+  a{color:var(--accent)}
+  .pill-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+  .pill{background:#ffffff08;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:.85rem}
+  .pill b{color:var(--accent)}
+  .callout{font-size:.85rem;color:var(--mut);background:#ffffff05;border-left:3px solid var(--accent);
+    padding:12px 16px;border-radius:0 10px 10px 0;margin-top:14px}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="badge">รายงานวิเคราะห์พลังงาน · Dev Team</div>
+  <h1>วิเคราะห์การใช้ไฟฟ้าตาม <span>TOU</span> เพื่อออกแบบระบบ<br><span>Solar + Battery</span> (Sigenergy 5kW / 10kWh)</h1>
+  <p class="sub">วิเคราะห์ข้อมูลการใช้ไฟฟ้ารายชั่วโมงจริง เพื่อประเมินกำลังการใช้ไฟช่วงกลางวัน (ผลิตจากแผงได้) และช่วงหลังพระอาทิตย์ตกถึง 22:00 (แบตเตอรี่จ่าย) พร้อมสรุปความเหมาะสมของแผนติดตั้ง</p>
+  <div class="meta">
+    <span>📅 ช่วงข้อมูล: <b>25 พ.ย. 2025 – 2 มิ.ย. 2026</b></span>
+    <span>🗓️ จำนวนวัน: <b>190 วัน</b> (สมบูรณ์ 188 วัน)</span>
+    <span>🔢 ข้อมูลรายชั่วโมง: <b>4,536 records</b></span>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+<!-- KPI -->
+<h2>ภาพรวมการใช้ไฟฟ้า</h2>
+<p class="lead">สรุปตัวเลขสำคัญจากข้อมูลจริงตลอด 188 วันที่มีข้อมูลครบ 24 ชั่วโมง</p>
+<div class="grid g4">
+  <div class="kpi"><div class="lbl">ใช้ไฟเฉลี่ยต่อวัน</div><div class="val">19.3 <small>kWh/วัน</small></div><div class="note">รวมทั้งหมด 3,643.7 kWh</div></div>
+  <div class="kpi grn"><div class="lbl">ประมาณการต่อเดือน</div><div class="val">~579 <small>kWh/เดือน</small></div><div class="note">แปรผันตามฤดู 442–823</div></div>
+  <div class="kpi peak"><div class="lbl">พีคสูงสุดราย ชม.</div><div class="val">5.48 <small>kWh</small></div><div class="note">12 เม.ย. 14:00 (แอร์)</div></div>
+  <div class="kpi solar"><div class="lbl">โหลดเฉลี่ยรายชั่วโมง</div><div class="val">0.80 <small>kW</small></div><div class="note">ค่าเฉลี่ยตลอด 24 ชม.</div></div>
+</div>
+
+<!-- TOU -->
+<h2>การแบ่งหน่วยตาม TOU</h2>
+<p class="lead">แบ่งตามช่วงเวลาที่กำหนด: On-Peak 09:00–22:00 และ Off-Peak 22:00–09:00</p>
+<div class="grid g2">
+  <div class="card">
+    <div class="chart-box" style="height:300px"><canvas id="touChart"></canvas></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:8px;font-size:1.05rem">สัดส่วนหน่วยไฟ (ตามนิยามที่กำหนด)</h3>
+    <div class="spec">
+      <div><span><span class="tag p">On-Peak</span> 09:00–22:00 (13 ชม.)</span><span>2,152 kWh · 59.1%</span></div>
+      <div><span>เฉลี่ยต่อวัน On-Peak</span><span>11.41 kWh/วัน</span></div>
+      <div><span><span class="tag o">Off-Peak</span> 22:00–09:00 (11 ชม.)</span><span>1,492 kWh · 40.9%</span></div>
+      <div><span>เฉลี่ยต่อวัน Off-Peak</span><span>7.88 kWh/วัน</span></div>
+    </div>
+    <div class="callout">
+      <b>หมายเหตุ TOU จริง (กฟน./กฟภ.):</b> อัตรา TOU บ้านอยู่อาศัยจริง คิด On-Peak เฉพาะ
+      <b>จันทร์–ศุกร์ 09:00–22:00</b> เท่านั้น ส่วนเสาร์–อาทิตย์และวันหยุดราชการเป็น Off-Peak ทั้งวัน
+      เมื่อคิดแบบนี้ สัดส่วนจะเป็น On-Peak <b>38.7%</b> / Off-Peak <b>61.3%</b>
+      ซึ่งหมายความว่าโหลดส่วนใหญ่อยู่ในช่วงค่าไฟถูกอยู่แล้ว
+    </div>
+  </div>
+</div>
+
+<!-- Hourly profile -->
+<h2>โปรไฟล์การใช้ไฟเฉลี่ยราย 24 ชั่วโมง</h2>
+<p class="lead">หัวใจของการออกแบบระบบ — บอกว่าควรให้แผงจ่ายตรง / ชาร์จแบต / ดึงจากแบต ในช่วงใด</p>
+<div class="card">
+  <div class="chart-box tall"><canvas id="hourChart"></canvas></div>
+  <div class="pill-row">
+    <div class="pill">🌅 <b>06–09</b> เริ่มมีโหลด แผงยังผลิตน้อย</div>
+    <div class="pill">☀️ <b>09–17</b> แผงผลิตได้เต็มที่ → จ่ายตรง + ชาร์จแบต</div>
+    <div class="pill">🌇 <b>17–22</b> พีคเย็น → แบตเตอรี่จ่าย</div>
+    <div class="pill">🌙 <b>22–06</b> โหลดฐาน ดึงไฟถูก/แบตที่เหลือ</div>
+  </div>
+</div>
+
+<!-- Solar windows -->
+<h2>กำลังการใช้ไฟแยกตามช่วง Solar</h2>
+<p class="lead">แบ่งวันออกเป็น 3 ช่วงตามพฤติกรรมของระบบ Solar + Battery</p>
+<div class="grid g3">
+  <div class="kpi solar">
+    <div class="lbl">☀️ ช่วงกลางวัน ผลิตไฟได้ (09:00–17:00)</div>
+    <div class="val">5.98 <small>kWh/วัน</small></div>
+    <div class="note">โหลดที่แผงจ่ายตรงได้ทันที (Self-consumption)</div>
+  </div>
+  <div class="kpi peak">
+    <div class="lbl">🌇 พระอาทิตย์ตก–22:00 (18:00–22:00)</div>
+    <div class="val">4.59 <small>kWh/วัน</small></div>
+    <div class="note">โหลดที่แบตเตอรี่ต้องจ่าย (พีคเย็น)</div>
+  </div>
+  <div class="kpi off">
+    <div class="lbl">🌙 กลางคืน (22:00–09:00)</div>
+    <div class="val">7.88 <small>kWh/วัน</small></div>
+    <div class="note">โหลดฐาน — แบตที่เหลือ + ไฟ Off-Peak</div>
+  </div>
+</div>
+<div class="callout">
+  ช่วง <b>17:00–22:00</b> (รวมตั้งแต่เริ่มมืด) ใช้ไฟเฉลี่ย <b>5.43 kWh/วัน</b> —
+  หากนับ <b>หลังพระอาทิตย์ตกยาวถึงเช้า (18:00–09:00)</b> เฉลี่ย <b>12.48 kWh/คืน</b>
+  (มัธยฐาน 11.05, สูงสุด 35.3 ในวันที่ร้อนจัด)
+</div>
+<div class="callout" style="border-left-color:var(--purple)">
+  📌 <b>หมายเหตุ:</b> ตัวเลขช่วง “บ้าน” ทั้งหมดด้านบน <b>ไม่รวมการชาร์จรถ EV</b> (เป็นมิเตอร์/วงจรแยก) ดูส่วน EV ด้านล่าง
+</div>
+
+<!-- ===== EV SECTION ===== -->
+<h2>🚗 การชาร์จรถยนต์ไฟฟ้า (EV) — วงจรแยก</h2>
+<p class="lead">วิเคราะห์วงจรชาร์จ EV (2 วงจรแยกที่บ้าน) — ซึ่งกลายเป็น<b>โหลดที่ใหญ่ที่สุดในบ้าน</b></p>
+
+<div class="verdict warn" style="margin-bottom:18px">
+  <div class="ic">💡</div>
+  <div><div class="t">EV กินไฟมากกว่าทั้งบ้านรวมกัน</div>
+  <div class="d">EV ใช้ไฟรวม <b>3,904 kWh</b> เทียบกับบ้าน (ไม่รวม EV) <b>3,644 kWh</b> — EV คิดเป็น <b>52%</b> ของการใช้ไฟทั้งหมด การออกแบบ Solar ต้องคำนึงถึง EV เป็นพิเศษ</div></div>
+</div>
+
+<div class="grid g4">
+  <div class="kpi purp"><div class="lbl">EV ใช้ไฟเฉลี่ย/วัน</div><div class="val" style="color:var(--purple)">20.8 <small>kWh</small></div><div class="note">รวม 3,904 kWh · ~623/เดือน</div></div>
+  <div class="kpi off"><div class="lbl">🌙 ชาร์จช่วง Off-Peak 22–09</div><div class="val">71.1<small>%</small></div><div class="note">2,777 kWh — ตรงกับที่ตั้งใจ ✅</div></div>
+  <div class="kpi grn"><div class="lbl">วันที่มีการชาร์จ</div><div class="val">85<small>%</small></div><div class="note">159/188 วัน · เฉลี่ย 24.5/ครั้ง</div></div>
+  <div class="kpi peak"><div class="lbl">กำลังชาร์จสูงสุด</div><div class="val">~7.3 <small>kW</small></div><div class="note">รายชั่วโมงสูงสุด (5 พ.ค. 17:00)</div></div>
+</div>
+
+<div class="two" style="margin-top:18px">
+  <div class="card">
+    <h3 style="font-size:1.05rem;margin-bottom:10px">โปรไฟล์การชาร์จราย 24 ชั่วโมง</h3>
+    <div class="chart-box"><canvas id="evHourChart"></canvas></div>
+    <div class="callout">การชาร์จกระจุกตัวชัดเจนช่วง <b>22:00–02:00</b> (พีค 23:00 = 2.45 kWh/ชม.) ยืนยันพฤติกรรมชาร์จหลังเข้า Off-Peak</div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:1.05rem;margin-bottom:10px">สัดส่วนการใช้ไฟ: บ้าน vs EV</h3>
+    <div class="chart-box"><canvas id="splitChart"></canvas></div>
+    <div class="spec" style="margin-top:8px">
+      <div><span><span class="tag g">บ้าน (ไม่รวม EV)</span></span><span>3,644 kWh · 48%</span></div>
+      <div><span><span class="tag" style="background:#a98bff22;color:var(--purple)">EV</span></span><span>3,904 kWh · 52%</span></div>
+      <div><span>รวมทั้งหมด</span><span>7,547 kWh · ~1,202/เดือน</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="font-size:1.05rem;margin-bottom:10px">EV: สัดส่วนตาม TOU</h3>
+  <div class="pill-row">
+    <div class="pill">🌙 Off-Peak 22–09: <b>2,777 kWh (71.1%)</b></div>
+    <div class="pill">☀️ On-Peak 09–22: <b>1,126 kWh (28.9%)</b></div>
+  </div>
+  <p style="color:var(--mut);font-size:.9rem;margin-top:8px">ส่วนใหญ่ชาร์จในช่วงค่าไฟถูกอยู่แล้ว (เหมาะสมด้าน TOU) — มีเพียง ~29% ที่ชาร์จกลางวัน/หัวค่ำ ซึ่งเป็นส่วนที่ Solar เข้ามาช่วยได้ถ้าเลื่อนมาชาร์จกลางวัน</p>
+</div>
+
+<div class="reco" style="border:1px solid #a98bff44;margin-top:18px">
+  <h3 style="font-size:1.1rem;margin-bottom:6px">🔌 กลยุทธ์ Solar สำหรับ EV</h3>
+  <div class="verdict ok">
+    <div class="ic">✅</div>
+    <div><div class="t">ชาร์จกลางคืน Off-Peak ต่อไป = ถูกที่สุดอยู่แล้ว</div>
+    <div class="d">EV 20.8 kWh/วัน มากเกินกว่าแบต 10 kWh จะรองรับการชาร์จกลางคืนจากแบตได้ การชาร์จกลางคืนด้วยไฟ Off-Peak (~2.6–3.3 บาท/หน่วย) คุ้มกว่าการเก็บไฟใส่แบตเพื่อมาชาร์จรถมาก</div></div>
+  </div>
+  <div class="verdict warn">
+    <div class="ic">🌞</div>
+    <div><div class="t">โอกาส: เลื่อนการชาร์จบางส่วนมากลางวัน เพื่อใช้แสงอาทิตย์ส่วนเกินฟรี</div>
+    <div class="d">วันแดดดี แผง 8 kWp ผลิต ~30 kWh หักโหลดบ้าน (6) + ชาร์จแบต (10) แล้วเหลือ <b>~14 kWh/วัน</b> ที่สามารถป้อน EV ได้ฟรีแทนการขายคืนราคาถูก — เหมาะถ้าวันหยุด/WFH รถจอดบ้านกลางวัน</div></div>
+  </div>
+  <div class="callout" style="margin-top:14px">
+    <b>สรุปสำหรับ EV:</b> ระบบ 5kW+10kWh <u>ไม่ได้</u> ออกแบบมาเพื่อชาร์จ EV กลางคืน (จะต้องใช้แบตใหญ่ระดับ 30–40 kWh ซึ่งไม่คุ้ม) — ให้ <b>คงการชาร์จกลางคืน Off-Peak</b> ไว้ และใช้ Solar ลดบิล “บ้าน” เป็นหลัก ส่วนเกินกลางวันค่อยป้อน EV เมื่อมีโอกาส จุดนี้ Sigenergy มีฟังก์ชัน Solar-only / Surplus EV charging รองรับ
+  </div>
+</div>
+
+<h2>แนวโน้มการชาร์จ EV รายเดือน</h2>
+<p class="lead">การใช้ EV ค่อนข้างสม่ำเสมอ สวนทางกับบ้านเล็กน้อย (ชาร์จมากช่วงปลายปี–ต้นปี)</p>
+<div class="card">
+  <div class="chart-box"><canvas id="evMonChart"></canvas></div>
+</div>
+
+<!-- Monthly trend -->
+<h2>แนวโน้มการใช้ไฟรายเดือน (ฤดูกาล)</h2>
+<p class="lead">ฤดูร้อน (เม.ย.–พ.ค.) ใช้ไฟพุ่งเกือบ 2 เท่าของหน้าหนาว — ปัจจัยสำคัญในการกำหนดขนาดแผง</p>
+<div class="card">
+  <div class="chart-box"><canvas id="monChart"></canvas></div>
+  <div class="callout">
+    หน้าหนาว (ธ.ค.–ม.ค.) ~<b>14–15 kWh/วัน</b> แต่หน้าร้อน (เม.ย.) พุ่งถึง <b>27.4 kWh/วัน</b>
+    จากภาระแอร์ ระบบควรออกแบบให้รองรับช่วงพีคหน้าร้อน ไม่ใช่ค่าเฉลี่ยทั้งปี
+  </div>
+</div>
+
+<!-- Recommendation -->
+<h2>ประเมินความเหมาะสมของแผน: Sigenergy 5kW + 10kWh</h2>
+<p class="lead">วิเคราะห์แผนที่วางไว้เทียบกับพฤติกรรมการใช้ไฟจริง</p>
+
+<div class="two">
+  <div class="card">
+    <h3 style="font-size:1.05rem;margin-bottom:6px">⚡ Inverter 5 kW</h3>
+    <div class="verdict ok">
+      <div class="ic">✅</div>
+      <div><div class="t">เพียงพอสำหรับโหลดบ้าน</div>
+      <div class="d">โหลดเฉลี่ยเพียง 0.8 kW และพีครายชั่วโมงสูงสุด 5.48 kWh (เฉลี่ยทั้งชั่วโมง) อินเวอร์เตอร์ 5kW รองรับได้สบาย เหลือ headroom สำหรับสตาร์ทแอร์</div></div>
+    </div>
+    <ul class="clean">
+      <li>โหลดเฉลี่ยรายชั่วโมงสูงสุดในข้อมูล ~<b>1.3 kW</b> (ช่วง 3 ทุ่ม)</li>
+      <li>กำลังขายไฟกลับ/จ่ายตรงกลางวันมีพื้นที่เหลือเพียงพอ</li>
+      <li>แนะนำ <b>DC oversizing</b> ใส่แผง 6–8 kWp (อินเวอร์เตอร์ Sigenergy รองรับ)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size:1.05rem;margin-bottom:6px">🔋 Battery 10 kWh</h3>
+    <div class="verdict warn">
+      <div class="ic">⚠️</div>
+      <div><div class="t">ครอบคลุมพีคเย็นได้เต็ม แต่ไม่พอทั้งคืนในหน้าร้อน</div>
+      <div class="d">ใช้งานจริงราว 9.5 kWh (LFP) ครอบคลุมพีคเย็น 18–22 (4.6 kWh) ได้สบาย แต่หากต้องการคุมทั้งคืน (18:00–09:00 เฉลี่ย 12.5 kWh) จะมี <b>62% ของคืน</b> ที่เกินความจุแบต</div></div>
+    </div>
+    <ul class="clean">
+      <li>พีคเย็น 18–22 เฉลี่ย <b>4.59</b> / สูงสุด 15.1 kWh</li>
+      <li>10 kWh จ่ายพีคเย็น + ต้นดึกได้ ที่เหลือดึงไฟ Off-Peak (ถูก)</li>
+      <li>หากต้องการ self-sufficient ทั้งคืนหน้าร้อน พิจารณา <b>เพิ่มเป็น 15–20 kWh</b></li>
+    </ul>
+  </div>
+</div>
+
+<div class="reco" style="border:1px solid #34507a55">
+  <h3 style="font-size:1.1rem;margin-bottom:6px">📐 ข้อเสนอแนะการออกแบบ (Design Sizing)</h3>
+  <p style="color:var(--mut);font-size:.92rem;margin-bottom:8px">เป้าหมาย: ให้แผงจ่ายโหลดกลางวันตรง + ชาร์จแบตเต็มเพื่อใช้ช่วงเย็น–ค่ำ</p>
+  <div class="spec">
+    <div><span>พลังงานที่ระบบต้องส่งต่อวัน (กลางวัน 6 + ชาร์จแบต 9.5)</span><span>~15.5 kWh/วัน</span></div>
+    <div><span>ชั่วโมงแดดใช้งานเฉลี่ย (Peak Sun Hours, ไทย)</span><span>~4 ชม./วัน</span></div>
+    <div><span>ขนาดแผงแนะนำ (PV Array)</span><span>6–8 kWp</span></div>
+    <div><span>ผลผลิตแผงคาดการณ์ (วันแดดดี)</span><span>~24–32 kWh/วัน</span></div>
+    <div><span>สัดส่วนพลังงานที่ทดแทนได้ (โดยประมาณ)</span><span>60–75% ของบิล</span></div>
+  </div>
+  <div class="callout" style="margin-top:16px">
+    <b>สรุป:</b> แผน <b>5kW + 10kWh</b> เป็นจุดเริ่มต้นที่สมเหตุสมผลและคุ้มค่า ครอบคลุมการใช้ไฟกลางวันและพีคเย็นได้ดี
+    หากต้องการลดบิลหน้าร้อนให้มากขึ้นและพึ่งตัวเองทั้งคืน แนะนำให้ <b>เผื่อขยายแบตเตอรี่</b> (Sigenergy ต่อแบตแบบ stackable ได้) และใส่แผงเต็ม 8 kWp ตั้งแต่แรก
+  </div>
+</div>
+
+<!-- Detail table -->
+<h2>ตารางรายละเอียดรายเดือน</h2>
+<div class="card" style="padding:14px 24px">
+  <table>
+    <thead><tr><th>เดือน</th><th>จำนวนวัน</th><th>รวม (kWh)</th><th>เฉลี่ย/วัน</th><th>สถานะ</th></tr></thead>
+    <tbody id="monTable"></tbody>
+  </table>
+</div>
+
+<footer>
+  <p><b>ที่มาข้อมูล:</b> History (บ้าน) + History-EV (วงจรชาร์จ EV) · 2025.11.25–2026.06.02 (UTC+7) · ข้อมูลรายชั่วโมงไฟล์ละ 4,536 records</p>
+  <p style="margin-top:6px">การประเมิน PV/Battery เป็นค่าประมาณการเชิงวิศวกรรมเบื้องต้นจากพฤติกรรมการใช้ไฟจริง — ตัวเลขผลิตจริงขึ้นกับทิศ/มุมแผง เงา และสภาพอากาศ ควรให้ผู้ติดตั้ง (เช่น <a href="https://www.solartech-center.co.th/sigenergy">Solartech / Sigenergy</a>) สำรวจหน้างานประกอบ</p>
+  <p style="margin-top:6px;opacity:.6">จัดทำโดย Dev Team · 2 มิ.ย. 2026</p>
+</footer>
+</div>
+
+<script>
+const HOURS=[0.783,0.685,0.633,0.593,0.57,0.54,0.641,0.757,0.728,0.894,0.906,0.735,0.722,0.662,0.644,0.652,0.751,0.836,0.938,1.115,1.24,1.293,1.091,0.87];
+const MON=[{m:"2025-12",t:470.4,d:31,a:15.17},{m:"2026-01",t:442.4,d:31,a:14.27},{m:"2026-02",t:533.3,d:28,a:19.04},{m:"2026-03",t:521.5,d:31,a:16.82},{m:"2026-04",t:822.6,d:30,a:27.42},{m:"2026-05",t:718.3,d:31,a:23.17}];
+const MONALL=[{m:"พ.ย. 25",d:6,t:86.8,a:14.47,p:0},{m:"ธ.ค. 25",d:31,t:470.4,a:15.17,p:0},{m:"ม.ค. 26",d:31,t:442.4,a:14.27,p:0},{m:"ก.พ. 26",d:28,t:533.3,a:19.04,p:1},{m:"มี.ค. 26",d:31,t:521.5,a:16.82,p:0},{m:"เม.ย. 26",d:30,t:822.6,a:27.42,p:2},{m:"พ.ค. 26",d:31,t:718.3,a:23.17,p:2},{m:"มิ.ย. 26",d:2,t:48.5,a:24.27,p:0}];
+Chart.defaults.color="#9fb0c5";
+Chart.defaults.font.family="'Segoe UI','Sarabun',sans-serif";
+const gridc="#2c3a5066";
+
+// TOU doughnut
+new Chart(touChart,{type:"doughnut",data:{labels:["On-Peak 09–22","Off-Peak 22–09"],
+  datasets:[{data:[2152.2,1491.5],backgroundColor:["#ff6b5e","#5cc8ff"],borderColor:"#1a2230",borderWidth:3}]},
+  options:{cutout:"62%",plugins:{legend:{position:"bottom",labels:{padding:18,usePointStyle:true}},
+  tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw.toFixed(0)} kWh (${(c.raw/3643.7*100).toFixed(1)}%)`}}}}});
+
+// Hourly bar with zones
+const zoneColors=HOURS.map((_,h)=> h>=9&&h<17?"#ffd24d": (h>=17&&h<22?"#ff6b5e": (h>=22||h<6?"#5cc8ff":"#7d8aa0")));
+new Chart(hourChart,{type:"bar",data:{labels:[...Array(24).keys()].map(h=>String(h).padStart(2,"0")),
+  datasets:[{label:"kWh เฉลี่ย/ชั่วโมง",data:HOURS,backgroundColor:zoneColors,borderRadius:5}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>`เวลา ${c[0].label}:00–${(+c[0].label+1)}:00`,
+    label:c=>` ${c.raw.toFixed(3)} kWh`}}},
+  scales:{x:{grid:{display:false},title:{display:true,text:"ชั่วโมง (24h)"}},
+    y:{grid:{color:gridc},title:{display:true,text:"kWh / ชั่วโมง"},beginAtZero:true}}}});
+
+// Monthly line
+new Chart(monChart,{type:"line",data:{labels:MONALL.map(x=>x.m),
+  datasets:[{label:"เฉลี่ย kWh/วัน",data:MONALL.map(x=>x.a),borderColor:"#ffb020",
+    backgroundColor:"#ffb02022",fill:true,tension:.35,pointRadius:5,pointBackgroundColor:"#ffb020",pointBorderColor:"#1a2230",pointBorderWidth:2}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} kWh/วัน (${MONALL[c.dataIndex].d} วัน)`}}},
+  scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"kWh / วัน"},beginAtZero:true}}}});
+
+// table
+const tb=document.getElementById("monTable");
+MONALL.forEach(x=>{
+  let s = x.a>=23?'<span class="tag p">หน้าร้อน พีค</span>': x.a>=18?'<span class="tag s">สูง</span>': x.d<10?'<span class="tag g">ข้อมูลไม่เต็มเดือน</span>':'<span class="tag o">ปกติ</span>';
+  tb.insertAdjacentHTML("beforeend",`<tr><td>${x.m}</td><td>${x.d}</td><td>${x.t.toFixed(1)}</td><td>${x.a.toFixed(2)}</td><td style="text-align:left">${s}</td></tr>`);
+});
+
+// ===== EV charts =====
+const EVH=[2.336,1.879,1.403,1.112,0.95,0.837,0.664,0.549,0.389,0.272,0.289,0.345,0.361,0.329,0.182,0.154,0.288,0.533,0.579,0.546,0.832,1.249,2.129,2.448];
+const EVMON=[{m:"พ.ย. 25",t:230,d:6,a:38.4},{m:"ธ.ค. 25",t:816,d:31,a:26.3},{m:"ม.ค. 26",t:747,d:31,a:24.1},{m:"ก.พ. 26",t:512,d:28,a:18.3},{m:"มี.ค. 26",t:483,d:31,a:15.6},{m:"เม.ย. 26",t:644,d:30,a:21.5},{m:"พ.ค. 26",t:458,d:31,a:14.8},{m:"มิ.ย. 26",t:14,d:2,a:7.1}];
+
+const evZone=EVH.map((_,h)=> (h>=22||h<9)?"#5cc8ff":"#a98bff");
+new Chart(evHourChart,{type:"bar",data:{labels:[...Array(24).keys()].map(h=>String(h).padStart(2,"0")),
+  datasets:[{label:"kWh/ชม.",data:EVH,backgroundColor:evZone,borderRadius:5}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>`${c[0].label}:00–${(+c[0].label+1)}:00`,
+    label:c=>` ${c.raw.toFixed(3)} kWh  ${(+c.label>=22||+c.label<9)?'(Off-Peak)':'(On-Peak)'}`}}},
+  scales:{x:{grid:{display:false},title:{display:true,text:"ชั่วโมง (24h)"}},
+    y:{grid:{color:gridc},title:{display:true,text:"kWh / ชั่วโมง"},beginAtZero:true}}}});
+
+new Chart(splitChart,{type:"doughnut",data:{labels:["บ้าน (ไม่รวม EV)","EV"],
+  datasets:[{data:[3643.7,3903.8],backgroundColor:["#46d39a","#a98bff"],borderColor:"#1a2230",borderWidth:3}]},
+  options:{cutout:"62%",plugins:{legend:{position:"bottom",labels:{padding:18,usePointStyle:true}},
+  tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw.toFixed(0)} kWh (${(c.raw/7547.5*100).toFixed(0)}%)`}}}}});
+
+new Chart(evMonChart,{type:"bar",data:{labels:EVMON.map(x=>x.m),
+  datasets:[{label:"เฉลี่ย kWh/วัน",data:EVMON.map(x=>x.a),backgroundColor:"#a98bff",borderRadius:5}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} kWh/วัน · รวม ${EVMON[c.dataIndex].t} kWh (${EVMON[c.dataIndex].d} วัน)`}}},
+  scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"kWh / วัน"},beginAtZero:true}}}});
+</script>
+</body>
+</html>
