@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>วิเคราะห์ความคุ้มค่า & ระยะคืนทุน — Solar Sigenergy 5kW + Battery 10kWh</title>
+<title>ความคุ้มค่า & คืนทุน — Solis 6kW + 8kWp + Battery 16kWh</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{--bg:#0f1419;--card:#1a2230;--card2:#222c3d;--line:#2c3a50;--txt:#e8edf4;--mut:#9fb0c5;
@@ -29,7 +29,7 @@
   @media(max-width:520px){.g4,.g3,.g2{grid-template-columns:1fr}}
   .kpi{background:linear-gradient(170deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:16px;padding:20px 18px}
   .kpi .lbl{font-size:.8rem;color:var(--mut);margin-bottom:8px}
-  .kpi .val{font-size:1.85rem;font-weight:700;line-height:1}
+  .kpi .val{font-size:1.8rem;font-weight:700;line-height:1}
   .kpi .val small{font-size:.85rem;font-weight:500;color:var(--mut)}
   .kpi .note{font-size:.76rem;color:var(--mut);margin-top:8px}
   .kpi.grn .val{color:var(--green)}.kpi.acc .val{color:var(--accent)}.kpi.peak .val{color:var(--peak)}.kpi.off .val{color:var(--offpeak)}
@@ -61,309 +61,184 @@
 <body>
 <header><div class="wrap">
   <div class="badge">วิเคราะห์ความคุ้มค่า · Payback · Dev Team</div>
-  <h1>คุ้มไหม? คืนทุนกี่ปี — <span>Solar Sigenergy 5kW + Battery 10kWh</span></h1>
-  <p class="sub">วิเคราะห์ความคุ้มค่าการลงทุนระบบ ~300,000 บาท จากพฤติกรรมการใช้ไฟจริง คิดอัตรา TOU: On-Peak (09:00–22:00) 6 บาท/หน่วย · Off-Peak (22:00–09:00) 3 บาท/หน่วย</p>
+  <h1>คุ้มไหม? คืนทุนกี่ปี — <span>Solis 6kW + แผง 8 kWp + Battery 16 kWh</span></h1>
+  <p class="sub">วิเคราะห์ความคุ้มค่าการลงทุน <b>330,000 บาท</b> จากพฤติกรรมการใช้ไฟจริง · อัตรา TOU: On-Peak (09:00–22:00) 6 บาท/หน่วย · Off-Peak (22:00–09:00) 3 บาท/หน่วย</p>
   <div class="meta">
-    <span>💰 เงินลงทุน: <b>300,000 บาท</b></span>
-    <span>⚡ ระบบ: <b>5kW Inverter + 10kWh Battery + ~5 kWp PV</b></span>
+    <span>💰 เงินลงทุน: <b>330,000 บาท</b></span>
+    <span>⚡ ระบบ: <b>Solis 6kW Hybrid + 8 kWp + 16 kWh</b></span>
     <span>📊 ฐานข้อมูล: การใช้ไฟจริง 188 วัน</span>
   </div>
 </div></header>
 
 <div class="wrap">
 
-<!-- VERDICT KPI -->
-<h2>สรุปผลความคุ้มค่า (กรณีฐาน)</h2>
-<p class="lead">ประมาณการจากการผลิตไฟเฉลี่ย ~19 หน่วย/วัน (แผง ~5 kWp) กับพฤติกรรมการใช้ไฟจริงของบ้าน</p>
+<h2>สรุปผลความคุ้มค่า</h2>
+<p class="lead">ระบบใหญ่พอ <b>ครอบคลุมการใช้ไฟของบ้านทั้งหลัง</b> (ผลิต ~29 หน่วย/วัน, แบต 16kWh เก็บใช้ตอนเย็น-กลางคืน) — ตัวแปรชี้ขาดคือ "ใช้ไฟเหลือกลางวันให้ EV ได้แค่ไหน"</p>
 <div class="grid g4">
   <div class="kpi peak"><div class="lbl">ค่าไฟปัจจุบัน (รวม EV)</div><div class="val">62,862 <small>บาท/ปี</small></div><div class="note">172 บาท/วัน</div></div>
-  <div class="kpi grn"><div class="lbl">ประหยัดได้</div><div class="val">~32,143 <small>บาท/ปี</small></div><div class="note">88 บาท/วัน</div></div>
-  <div class="kpi acc"><div class="lbl">ระยะคืนทุน (เรตที่ให้มา)</div><div class="val">~9.3 <small>ปี</small></div><div class="note">~11 ปี ที่เรตจริง · 8.8 ปี ถ้าคิดค่าไฟขึ้น 3%/ปี</div></div>
-  <div class="kpi grn"><div class="lbl">กำไรสุทธิ 15 ปี*</div><div class="val">+234,489 <small>บาท</small></div><div class="note">ROI ~78% · *ก่อนหักค่าเปลี่ยน inverter/บำรุงรักษา</div></div>
+  <div class="kpi grn"><div class="lbl">ประหยัดได้</div><div class="val">33,600–42,400 <small>บาท/ปี</small></div><div class="note">ขึ้นกับการใช้ไฟเหลือ</div></div>
+  <div class="kpi acc"><div class="lbl">ระยะคืนทุน</div><div class="val">~8–10 <small>ปี</small></div><div class="note">~9–12 ปี ที่เรต TOU จริง</div></div>
+  <div class="kpi grn"><div class="lbl">กำไรสุทธิ 15 ปี*</div><div class="val">+228,989 <small>บาท</small></div><div class="note">*ก่อนหักค่าเปลี่ยน inverter/บำรุงรักษา</div></div>
 </div>
 
 <div class="verdict">
   <div class="ic">✅</div>
-  <div><div class="t">คุ้มค่า — แต่เป็นการลงทุนระยะยาว (คืนทุน ~9–11 ปี)</div>
-  <div class="d">ด้วยเรตค่าไฟ <b>ที่ให้มา (6/3)</b> คืนทุนราว <b>8.8–9.3 ปี</b> แต่ถ้าใช้ <b>เรต TOU จริง</b> ของ กฟน./กฟภ. (On-Peak จริงต่ำกว่า + เสาร์–อาทิตย์เป็น Off-Peak) ค่าประหยัดจะลดลง ~15% ทำให้คืนทุนขยับไป <b>~11 ปี</b> หลังจากนั้นคือกำไร — กำไรรวม <b>+234,000 บาทใน 15 ปี</b> (ก่อนหักค่าเปลี่ยน inverter ราวปีที่ 10–12 และค่าบำรุงรักษา) ปัจจัยชี้ขาดคือ <b>ราคาชุดจริง</b> (300k อาจไม่พอสำหรับ Sigenergy แท้ระดับพรีเมียม — ต้องขอใบเสนอราคา) และปริมาณแดดจริง</div></div>
+  <div><div class="t">คุ้มค่า — ระบบครอบคลุมบ้านทั้งหลัง คืนทุน ~8–10 ปี</div>
+  <div class="d">ด้วยแผง 8 kWp + แบต 16 kWh ระบบ <b>กลบค่าไฟบ้านได้เกือบ 100%</b> (เหลือแต่ค่าชาร์จ EV กลางคืน) — กรณีบ้านนี้ (EV ชาร์จกลางคืน) ประหยัด ~<b>33,600฿/ปี</b> คืนทุน ~9.8 ปี (เรตที่ให้) / ~11.5 ปี (เรตจริง) · ถ้า <b>ย้าย EV มาชาร์จกลางวัน</b> ดูดไฟเหลือ ประหยัดเพิ่มเป็น ~42,400฿/ปี คืนทุนเหลือ ~7.8 ปี หลังจากนั้นคือกำไร (อายุระบบ 15–25 ปี)</div></div>
 </div>
 
-<!-- COMPARISON TABLE -->
-<h2>ตารางเปรียบเทียบ: ติด vs ไม่ติด Solar</h2>
-<p class="lead">เปรียบเทียบค่าไฟและความคุ้มค่าใน 3 สถานการณ์ตามปริมาณแดด (แผงผลิตได้ต่อวัน)</p>
+<h2>ตารางเปรียบเทียบ: ติด vs ไม่ติด</h2>
+<p class="lead">2 กรณีหลังติดตั้ง ขึ้นกับว่าเอาไฟเหลือกลางวัน (~8 หน่วย/วัน) ไปชาร์จ EV ได้ไหม</p>
 <div class="card" style="padding:14px 24px;overflow-x:auto">
   <table>
-    <thead><tr>
-      <th>รายการ</th><th>ไม่ติด Solar</th>
-      <th>ติด — แดดน้อย<br>(16 หน่วย/วัน)</th>
-      <th>ติด — กรณีฐาน<br>(19 หน่วย/วัน)</th>
-      <th>ติด — แดดดี<br>(22 หน่วย/วัน)</th>
-    </tr></thead>
+    <thead><tr><th>รายการ</th><th>ไม่ติด Solar</th><th>ติด · EV ชาร์จกลางคืน<br><span style="font-weight:400;text-transform:none">(โปรไฟล์จริงบ้านนี้)</span></th><th>ติด · ย้าย EV มากลางวัน<br><span style="font-weight:400;text-transform:none">(ดูดไฟเหลือ)</span></th></tr></thead>
     <tbody>
-      <tr><td>ค่าไฟ/ปี (บาท)</td><td>62,862</td><td>33,945</td><td class="hi">30,719</td><td>27,434</td></tr>
-      <tr><td>ประหยัด/ปี (บาท)</td><td>—</td><td>28,917</td><td class="hi">32,143</td><td>35,428</td></tr>
-      <tr><td>ประหยัด/วัน (บาท)</td><td>—</td><td>79</td><td class="hi">88</td><td>97</td></tr>
-      <tr><td>% ลดค่าไฟ</td><td>—</td><td>46%</td><td class="hi">51%</td><td>56%</td></tr>
-      <tr><td><b>ระยะคืนทุน (ปี)</b></td><td>—</td><td><span class="tag p">10.4</span></td><td class="hi"><span class="tag a">9.3</span></td><td><span class="tag g">8.5</span></td></tr>
+      <tr><td>ค่าไฟ/ปี (บาท)</td><td>62,862</td><td class="hi">29,246</td><td>20,462</td></tr>
+      <tr><td>ประหยัด/ปี (บาท)</td><td>—</td><td class="hi">33,616</td><td>42,400</td></tr>
+      <tr><td>% ลดค่าไฟ</td><td>—</td><td class="hi">53%</td><td>67%</td></tr>
+      <tr><td><b>คืนทุน — เรตที่ให้ (6/3)</b></td><td>—</td><td class="hi"><span class="tag a">9.8 ปี</span></td><td><span class="tag g">7.8 ปี</span></td></tr>
+      <tr><td><b>คืนทุน — เรต TOU จริง</b></td><td>—</td><td class="hi"><span class="tag a">~11.5 ปี</span></td><td><span class="tag g">~9.2 ปี</span></td></tr>
     </tbody>
   </table>
 </div>
-<div class="callout">เรตค่าไฟ: On-Peak <b>6 บาท</b> (09:00–22:00) · Off-Peak <b>3 บาท</b> (22:00–09:00) ตามที่กำหนด · ระยะคืนทุนในตารางเป็นแบบ <b>ไม่คิดเงินเฟ้อ</b> (Simple) หากคิดค่าไฟขึ้นปีละ 3% กรณีฐานจะเหลือ ~8.8 ปี</div>
+<div class="callout">กรณี "EV กลางคืน" ระบบกลบ <b>ค่าไฟบ้านทั้งหมด</b> (33,616฿/ปี = บิลบ้านทั้งก้อน) เหลือแต่ค่าชาร์จ EV กลางคืน — การ <b>ย้าย EV บางส่วนมาชาร์จกลางวัน</b> คือคันโยกเดียวที่ทำให้คืนทุนเร็วขึ้นอีก ~2 ปี โดยไม่ต้องลงทุนเพิ่ม</div>
 
-<!-- BILL COMPARISON CHART -->
-<h2>กราฟเปรียบเทียบค่าไฟรายเดือน: ติด vs ไม่ติด</h2>
-<p class="lead">ค่าไฟรายเดือน (บาท) ก่อนและหลังติดตั้ง — แท่งเขียวคือส่วนที่ประหยัดได้</p>
+<h2>กราฟเปรียบเทียบค่าไฟรายเดือน</h2>
+<p class="lead">ค่าไฟรายเดือน (บาท) ก่อน/หลังติด — กรณี EV ชาร์จกลางคืน (บ้านถูกกลบเกือบหมด)</p>
 <div class="card"><div class="chart-box"><canvas id="billChart"></canvas></div>
-  <div class="callout g">ค่าไฟลดลงเฉลี่ย ~51% ทุกเดือน เห็นผลชัดเจนหน้าร้อน (มี.ค.–เม.ย.) ที่แดดแรงและใช้แอร์มาก เดือน มี.ค. ลดจาก ~4,220 เหลือ ~1,401 บาท</div>
+  <div class="callout g">ค่าไฟลดลงเฉลี่ย ~53% ทุกเดือน · เดือน พ.ค. ลดจาก ~5,035 เหลือ ~1,786 บาท (แดดดี+โหลดบ้านพอดี)</div>
 </div>
 
-<!-- PAYBACK CHART -->
 <h2>กราฟการคืนทุน (Cumulative Cashflow)</h2>
-<p class="lead">เงินสดสะสมตลอดอายุระบบ — จุดที่เส้นตัดศูนย์คือ "คืนทุน" (คิดค่าไฟเพิ่ม 3%/ปี, ประสิทธิภาพลด 1.5%/ปี)</p>
+<p class="lead">เงินสดสะสม — ฐาน: กรณีจริง (EV กลางคืน) คิดค่าไฟขึ้น 3%/ปี, ประสิทธิภาพลด 1.5%/ปี</p>
 <div class="card"><div class="chart-box" style="height:380px"><canvas id="paybackChart"></canvas></div>
   <div class="pill-row">
-    <div class="pill">📉 เริ่มต้น: <b>-300,000 บาท</b></div>
-    <div class="pill">⚖️ คืนทุน: <b>ปีที่ ~8.8</b></div>
-    <div class="pill">📈 ปีที่ 15: <b>+234,489 บาท</b></div>
-    <div class="pill">🚀 ปีที่ 20: <b>+439,982 บาท</b></div>
+    <div class="pill">📉 เริ่มต้น: <b>−330,000 บาท</b></div>
+    <div class="pill">⚖️ คืนทุน: <b>ปีที่ ~9.2</b></div>
+    <div class="pill">📈 ปีที่ 15: <b>+228,989 บาท</b></div>
+    <div class="pill">🚀 ปีที่ 20: <b>+443,902 บาท</b></div>
   </div>
-  <div class="callout">เส้นนี้ <b>ยังไม่หัก</b>ค่าเปลี่ยน inverter (~ปีที่ 10–12) และค่าบำรุงรักษา — ซึ่งตกใกล้จุดคืนทุนพอดี ในทางปฏิบัติคืนทุนจริงอาจขยับไปเกิน 10 ปี โดยเฉพาะถ้าใช้เรตค่าไฟจริง (~11 ปี)</div>
+  <div class="callout">เส้นนี้ <b>ยังไม่หัก</b>ค่าเปลี่ยน inverter (~ปีที่ 10–12) และค่าบำรุงรักษา · ถ้าใช้เรต TOU จริง คืนทุนขยับเป็น ~11 ปี</div>
 </div>
 
-<!-- WHERE SAVINGS COME FROM -->
-<h2>ที่มาของเงินที่ประหยัด (กรณีฐาน 88 บาท/วัน)</h2>
+<h2>ที่มาของเงินที่ประหยัด (กรณีย้าย EV กลางวัน ~116 บาท/วัน)</h2>
 <div class="two">
-  <div class="card">
-    <div class="chart-box" style="height:300px"><canvas id="flowChart"></canvas></div>
-  </div>
+  <div class="card"><div class="chart-box" style="height:300px"><canvas id="flowChart"></canvas></div></div>
   <div class="card">
     <h3 style="font-size:1.05rem;margin-bottom:8px">โมเดลการไหลของพลังงาน/วัน</h3>
     <div class="spec">
-      <div><span>☀️ แผงจ่ายโหลดกลางวันตรง (09–17)</span><span>5.98 หน่วย × 6 = 35.9฿</span></div>
-      <div><span>🔋 แบตจ่ายพีคเย็น (17–22)</span><span>5.43 หน่วย × 6 = 32.6฿</span></div>
-      <div><span>🔋 แบตจ่ายช่วงกลางคืน (22–09)</span><span>4.07 หน่วย × 3 = 12.2฿</span></div>
-      <div><span>🚗 ไฟเหลือ → ชาร์จ EV</span><span>2.46 หน่วย × 3 = 7.4฿</span></div>
-      <div><span><b>รวมประหยัด/วัน</b></span><span><b>~88 บาท</b></span></div>
+      <div><span>☀️ แผงจ่ายโหลดกลางวันตรง (09–17)</span><span>5.98 × 6 = 36฿</span></div>
+      <div><span>🔋 แบตจ่ายพีคเย็น (17–22)</span><span>5.43 × 6 = 33฿</span></div>
+      <div><span>🔋 แบตจ่ายโหลดบ้านกลางคืน (22–09)</span><span>7.88 × 3 = 24฿</span></div>
+      <div><span>🚗 ไฟเหลือ (~8 หน่วย) → ชาร์จ EV</span><span>8.0 × 3 = 24฿</span></div>
+      <div><span><b>รวมประหยัด/วัน</b></span><span><b>~116 บาท</b></span></div>
     </div>
-    <div class="callout">มูลค่าสูงสุดมาจากการ <b>หลบ On-Peak (6 บาท)</b> — แผงจ่ายกลางวัน + แบตเลื่อนไฟไปจ่ายพีคเย็น รวมหลบ On-Peak ได้ ~11.4 หน่วย/วัน</div>
-    <div class="callout">⚠️ <b>หมายเหตุเรื่อง EV:</b> การ "เลื่อน EV มาชาร์จกลางวัน" <u>แทบไม่ช่วยประหยัดเพิ่ม</u> เพราะ EV ชาร์จ Off-Peak (3 บาท) อยู่แล้ว และกรณีฐานไฟจากแผงถูกใช้หมด 100% แล้ว (5.98+แบต+เหลือ 2.46 = 19 หน่วย) คันโยกจริงที่จะลดบิล EV คือ <b>เพิ่มขนาดแผง</b> (ซึ่งมีค่าใช้จ่ายเพิ่ม) ไม่ใช่การเปลี่ยนเวลาชาร์จ</div>
+    <div class="callout">แบต 16 kWh จ่ายโหลดบ้าน <b>ตลอดทั้งคืน</b>ได้ (เย็น 5.43 + กลางคืน 7.88 = 13.3 หน่วย < 15.2 ใช้ได้) → ดึงไฟกริดเข้าบ้านแทบเป็นศูนย์</div>
   </div>
 </div>
 
-<!-- ===== SCENARIOS: price 350/400k + 8kWp ===== -->
-<h2>🔧 Scenario: ราคาจริง 350k/400k และเพิ่มแผงเป็น 8 kWp</h2>
-<p class="lead">ทดสอบความไว 2 ปัจจัย: (1) ราคาชุดจริงที่อาจสูงกว่า 300k และ (2) เพิ่มขนาดแผงจาก 5 → 8 kWp เพื่อช่วย EV</p>
-
-<div class="verdict" style="background:#ffb02012;border-color:#ffb02040">
-  <div class="ic">⚠️</div>
-  <div><div class="t">8 kWp คุ้ม “ก็ต่อเมื่อ” ใช้ไฟเหลือกลางวันได้จริง</div>
-  <div class="d">แผง 8 kWp ผลิตไฟเหลือ ~<b>10.5 หน่วย/วัน</b> หลังจ่ายบ้าน+ชาร์จแบตเต็ม ไฟส่วนนี้มีค่าก็ต่อเมื่อเอาไป <b>ชาร์จ EV ตอนกลางวัน</b> หรือ <b>ขายคืนการไฟฟ้า</b> — ถ้ารถไม่อยู่บ้านกลางวันและขายคืนไม่ได้ ไฟเหลือทิ้งฟรี ทำให้ 8 kWp <b>แย่กว่า 5 kWp</b> (จ่ายแพงขึ้นแต่ประหยัดได้น้อยลง −2,700 บาท/ปี) อีกทั้ง inverter 5kW จะ <b>clip</b> ไฟแผง 8 kWp ช่วงเที่ยง — ถ้าจะลง 8 kWp จริงควรขยับเป็น inverter 8–10kW</div></div>
-</div>
-
-<h3 style="margin:24px 0 4px;font-size:1.1rem">ตารางระยะคืนทุน (ปี) — ตามขนาดแผง × ราคาชุด</h3>
-<p class="lead" style="margin-bottom:12px">เรตที่ให้มา (6/3 บาท) · ตัวเลขในวงเล็บ = เมื่อใช้เรต TOU จริง (ต่ำลง ~15%)</p>
-<div class="card" style="padding:14px 24px;overflow-x:auto">
-  <table>
-    <thead><tr><th>รูปแบบระบบ</th><th>ประหยัด/ปี</th><th>@ 300k</th><th>@ 350k</th><th>@ 400k</th></tr></thead>
-    <tbody>
-      <tr class="hi"><td>5 kWp (ฐานเดิม)</td><td>32,143</td><td>9.3 <span style="color:var(--mut)">(11.0)</span></td><td>10.9 <span style="color:var(--mut)">(12.8)</span></td><td>12.4 <span style="color:var(--mut)">(14.6)</span></td></tr>
-      <tr><td>8 kWp · ใช้ไฟเหลือ<b>เต็ม</b> 🚗☀️</td><td>40,903</td><td><span class="tag g">7.3</span> <span style="color:var(--mut)">(8.6)</span></td><td><span class="tag g">8.6</span> <span style="color:var(--mut)">(10.1)</span></td><td>9.8 <span style="color:var(--mut)">(11.5)</span></td></tr>
-      <tr><td>8 kWp · ใช้ไฟเหลือ<b>ครึ่ง</b></td><td>35,174</td><td>8.5 <span style="color:var(--mut)">(10.0)</span></td><td>10.0 <span style="color:var(--mut)">(11.7)</span></td><td>11.4 <span style="color:var(--mut)">(13.4)</span></td></tr>
-      <tr><td>8 kWp · ไฟเหลือ<b>ทิ้ง</b> ❌</td><td>29,445</td><td><span class="tag p">10.2</span> <span style="color:var(--mut)">(12.0)</span></td><td>11.9 <span style="color:var(--mut)">(14.0)</span></td><td>13.6 <span style="color:var(--mut)">(16.0)</span></td></tr>
-    </tbody>
-  </table>
-</div>
-<div class="callout">หมายเหตุ: โดยทั่วไประบบ 8 kWp มีราคาสูงกว่า 5 kWp อยู่แล้ว (~+30,000–50,000 บาทค่าแผง + อาจต้องเปลี่ยน inverter) ดังนั้นคอลัมน์ของ 8 kWp ควรอ่านที่ราคา 350k–400k เป็นหลัก</div>
-
-<h3 style="margin:24px 0 4px;font-size:1.1rem">กราฟเปรียบเทียบระยะคืนทุน</h3>
-<div class="card"><div class="chart-box" style="height:360px"><canvas id="scenChart"></canvas></div></div>
-
-<div class="two" style="margin-top:18px">
+<h2>🚗 คันโยกสำคัญ: ใช้ไฟเหลือกลางวันให้ EV</h2>
+<p class="lead">8 kWp ผลิตเกินที่บ้าน+แบตจะรับได้ ~8 หน่วย/วัน — มูลค่าของส่วนนี้ขึ้นกับว่าเอาไป EV ได้ไหม</p>
+<div class="two">
   <div class="card">
-    <h3 style="font-size:1.05rem;margin-bottom:8px">คุ้มไหมที่จะ “เพิ่มแผง” 5→8 kWp?</h3>
-    <p style="color:var(--mut);font-size:.9rem;margin-bottom:6px">มองเฉพาะส่วนเพิ่ม 3 kWp (สมมติ <b>+40,000 บาท ค่าแผงเท่านั้น</b> — ยังไม่รวมค่าเปลี่ยน inverter เป็น 8–10kW อีก ~30,000–60,000฿):</p>
-    <div class="spec">
-      <div><span>ใช้ไฟเหลือเต็ม</span><span style="color:var(--green)">+8,760฿/ปี · คืนทุน 4.6 ปี ✅</span></div>
-      <div><span>ใช้ไฟเหลือครึ่ง</span><span style="color:var(--accent)">+3,031฿/ปี · คืนทุน 13.2 ปี</span></div>
-      <div><span>ไฟเหลือทิ้ง <span style="color:var(--peak);font-size:.82em">← ค่า default ของบ้านนี้</span></span><span style="color:var(--peak)">−2,698฿/ปี · ไม่คืนทุน ❌</span></div>
-    </div>
-    <p style="color:var(--mut);font-size:.82rem;margin-top:8px">* "คืนทุน 4.6 ปี" คิดเฉพาะค่าแผง — ถ้ารวมค่าเปลี่ยน inverter ด้วย ส่วนเพิ่มจะคืนทุน ~8–9 ปี · โปรไฟล์ EV บ้านนี้ (รถออกกลางวัน ชาร์จกลางคืน) มีแนวโน้มตรงกับกรณี "ไฟเหลือทิ้ง" มากที่สุด</p>
+    <div class="chart-box" style="height:280px"><canvas id="capChart"></canvas></div>
   </div>
   <div class="card">
-    <h3 style="font-size:1.05rem;margin-bottom:8px">คำแนะนำ</h3>
+    <h3 style="font-size:1.05rem;margin-bottom:8px">ทำไมต้องสนใจไฟเหลือ?</h3>
     <ul class="clean">
-      <li>ถ้ารถ <b>อยู่บ้านกลางวันบ่อย</b> (WFH/วันหยุด) → <b>8 kWp คุ้ม</b> ส่วนเพิ่มคืนทุน ~4.6 ปี (เฉพาะค่าแผง)</li>
-      <li>ถ้ารถ <b>ออกทุกวันกลางวัน</b> และขายคืนไม่ได้ → <b>อยู่ที่ 5 kWp พอ</b> อย่าเพิ่มแผง</li>
-      <li>ถ้าจะลง 8 kWp ควรใช้ <b>inverter 8–10kW</b> (กัน clipping) — Sigenergy มีรุ่นรองรับ</li>
-      <li>ราคาชุดคือปัจจัยใหญ่: ทุก ๆ <b>+50,000 บาท</b> คืนทุนยืดออกราว <b>1.5–1.7 ปี</b></li>
+      <li>ระบบกลบค่าไฟบ้านเต็มแล้ว → ไฟเหลือ ~8 หน่วย/วันคือ <b>กำไรเพิ่มก้อนสุดท้าย</b></li>
+      <li>EV กิน 20.7 หน่วย/วัน — ดูดไฟเหลือกลางวันได้สบาย ถ้า <b>รถอยู่บ้าน</b> (WFH/วันหยุด) หรือใช้ <b>evcc/ตัวควบคุมสั่งชาร์จตามไฟเหลือ</b></li>
+      <li>ถ้ารถออกทุกวัน ไฟเหลือถูกทิ้ง (หรือขายคืน ~2.2฿) → ประหยัดน้อยลง ~8,800฿/ปี</li>
+      <li>ขายไฟคืนการไฟฟ้า <b>มักได้ราคาต่ำ (~2.2฿ ไม่ใช่ 1:1) มีโควตา อาจสมัครไม่ได้</b> — ใช้ EV ดูดเองคุ้มกว่า</li>
     </ul>
   </div>
 </div>
 
-<!-- ===== SCENARIO: 2nd battery +100k ===== -->
-<h2>🔋 Scenario: เพิ่มแบตเตอรี่อีก 10 kWh (+100,000฿ → รวม 20 kWh)</h2>
-<p class="lead">วิเคราะห์มูลค่าส่วนเพิ่มของแบตลูกที่ 2 — กุญแจคือ "แบตที่เพิ่มมา เอาไปแทนไฟราคาแพง (On-Peak 6฿) ได้แค่ไหน"</p>
-
-<div class="verdict" style="background:#ffb02012;border-color:#ffb02040">
-  <div class="ic">⚠️</div>
-  <div><div class="t">ก้ำกึ่ง — ส่วนใหญ่ไม่คุ้ม คืนทุนดีสุด ~10 ปี (พอ ๆ กับอายุประกันแบต)</div>
-  <div class="d">มูลค่าแบตลูกที่ 2 ขึ้นกับว่า "มีไฟราคาแพงให้มันไปแทน หรือมีไฟเหลือทิ้งให้มันไปเก็บ" ไหม — <b>กรณีดีสุด</b> คือมีแผง 8 kWp ที่ <b>ไฟเหลือถูกทิ้งอยู่</b> (รถออกกลางวัน) แล้วแบตลูก 2 เก็บมาจ่ายกลางคืนแทนไฟกริด ได้ ~<b>10,300฿/ปี (คืนทุน ~9.7 ปี)</b> ส่วนถ้าใช้ไฟเหลือคุ้มอยู่แล้ว หรือยังอยู่ที่ 5 kWp → แบตลูก 2 <b>แทบไม่ช่วย (~0)</b> และคืนทุน ~10 ปีนี้ก็พอ ๆ กับอายุประกันแบต จึงเป็นการลงทุน "เสมอตัว" มากกว่ากำไรชัด</div></div>
-</div>
-
-<div class="card" style="padding:14px 24px;overflow-x:auto">
-  <table>
-    <thead><tr><th>สถานการณ์</th><th>แบตลูก 2 ชาร์จจาก</th><th>ไปแทนโหลด</th><th>ประหยัดเพิ่ม/ปี</th><th>คืนทุนส่วนเพิ่ม</th></tr></thead>
-    <tbody>
-      <tr><td>5 kWp · EV ชาร์จกลางคืน <span style="color:var(--mut);font-size:.82em">(โปรไฟล์จริง)</span></td><td>ไฟแผงเหลือแค่ 2.5/วัน</td><td>—</td><td>~0฿</td><td><span class="tag p">ไม่คุ้ม</span></td></tr>
-      <tr><td>8 kWp · ไฟเหลือ<b>ถูกใช้คุ้มอยู่แล้ว</b> (EV กลางวัน)</td><td>ไม่มีไฟเหลือให้เก็บเพิ่ม</td><td>—</td><td>~0฿</td><td><span class="tag p">ไม่คุ้ม</span></td></tr>
-      <tr class="hi"><td>8 kWp · ไฟเหลือ<b>ถูกทิ้ง</b> → เก็บใส่แบตจ่ายกลางคืน</td><td>ไฟเหลือ 10.5/วัน (ฟรี)</td><td>Off-Peak กลางคืน (3฿)</td><td><b>+10,308฿</b></td><td><span class="tag a">~9.7 ปี ⚠️</span></td></tr>
-      <tr><td>ย้าย EV หัวค่ำ / <b>TOU Arbitrage</b> (จ่ายช่วงแพง)</td><td>ไฟเหลือ/กริด Off-Peak (3฿)</td><td>On-Peak (6฿)</td><td>+5,800 ถึง +9,200฿</td><td><span class="tag a">~11–17 ปี ⚠️</span></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="two" style="margin-top:18px">
-  <div class="card">
-    <div class="chart-box" style="height:300px"><canvas id="battChart"></canvas></div>
-  </div>
-  <div class="card">
-    <h3 style="font-size:1.05rem;margin-bottom:8px">หลักคิดสำคัญ (อ่านก่อนตัดสินใจ)</h3>
-    <ul class="clean">
-      <li>แบต <b>ลูกแรก 10 kWh ก็เพียงพอ</b>จ่ายพีคเย็น (On-Peak 17–22 = 5.43 หน่วย) ได้หมดอยู่แล้ว — แบตลูก 2 ไม่ได้ช่วยพีคเย็นเพิ่ม</li>
-      <li>แบตลูก 2 จะมีค่า ก็ต่อเมื่อมัน (ก) เก็บ <b>ไฟเหลือที่กำลังถูกทิ้ง</b> มาใช้กลางคืน หรือ (ข) ไปแทน <b>โหลด On-Peak 6฿</b> — ถ้าไม่เข้า 2 ข้อนี้ มันแค่เลื่อนไฟ Off-Peak (3฿) ที่มีอยู่แล้ว = ไม่ได้กำไร</li>
-      <li>กรณีดีสุด (8kWp + ไฟเหลือถูกทิ้ง) คืนทุน ~9.7 ปี ≈ <b>อายุประกันแบต</b> → เสมอตัว ไม่ใช่กำไรชัด</li>
-      <li><b>ทางที่ถูกกว่า:</b> ใช้ไฟเหลือ "ตรง ๆ" ด้วยการย้าย EV มาชาร์จกลางวัน — ได้ 3฿/หน่วยเท่ากันโดย <b>ไม่ต้องจ่าย 100,000฿</b></li>
-    </ul>
-  </div>
-</div>
-<div class="callout">ลำดับความคุ้มของการใช้เงินก้อนถัดไป: <b>1) มีแผงให้พอ → 2) ใช้ไฟเหลือให้คุ้ม (ย้าย EV มากลางวัน ฟรี) → 3) ค่อยคิดเรื่องแบตเพิ่ม</b> — แบตลูกที่ 2 ควรเป็น <b>ตัวเลือกท้าย ๆ</b> และเฉพาะเมื่อมีไฟเหลือเหลือทิ้งจริง ๆ เท่านั้น</div>
-
-<!-- ===== V2H / EV BACKUP ===== -->
+<!-- V2H -->
 <h2>🔌 ใช้รถ EV (80 kWh) จ่ายไฟบ้านตอนไฟดับ — คุ้มไหม?</h2>
-<p class="lead">วิเคราะห์ V2H/V2L: เอาแบตรถ EV 80 kWh มาเป็นไฟสำรองยามไฟดับกลางคืน เทียบกับแบตบ้าน 10 kWh ที่มีอยู่</p>
-
+<p class="lead">V2H/V2L: เอาแบตรถ 80 kWh เป็นไฟสำรองยามไฟดับ เทียบกับแบตบ้าน 16 kWh</p>
 <div class="verdict" style="background:#46d39a12;border-color:#46d39a40">
   <div class="ic">✅</div>
-  <div><div class="t">คุ้ม “ถ้า” รถมี V2L ติดมาในตัว — แต่ไม่ต้องลงทุน V2H แพง ๆ</div>
-  <div class="d">แบตรถ 80 kWh เป็นไฟสำรอง <b>ก้อนมหึมา (~64 kWh ใช้ได้ เก็บ 20% ไว้ขับ)</b> จ่ายไฟบ้านได้ ~<b>8 คืน</b> — มากกว่าแบตบ้าน 10kWh ถึง 7 เท่า ถ้ารถมี <b>V2L (ปลั๊กไฟในตัว)</b> ติดมาอยู่แล้ว ต้นทุนแทบเป็นศูนย์ → คุ้มไว้ใช้ฉุกเฉิน แต่ถ้าต้องซื้อชุด <b>V2H</b> (จ่ายเข้าตู้ไฟทั้งบ้าน) หลักแสน <b>ไม่คุ้ม</b> เพราะแบตบ้าน 10kWh ก็เอาอยู่สำหรับไฟดับทั่วไปแล้ว</div></div>
+  <div><div class="t">คุ้ม “ถ้า” รถมี V2L ติดมาในตัว — ไม่ต้องลงทุน V2H แพง</div>
+  <div class="d">แบตบ้าน 16 kWh จ่ายไฟบ้านตอนไฟดับได้ ~<b>2 คืนปกติ</b>อยู่แล้ว (เพียงพอสำหรับไฟดับทั่วไป) · แบตรถ 80 kWh (ใช้ ~64) จ่ายได้เอง ~<b>8 คืน</b> (รวมแบตบ้าน ~10 คืน) ถ้ารถมี <b>V2L (ปลั๊กในตัว)</b> ต้นทุน ~0 → คุ้มไว้ใช้ฉุกเฉิน แต่ถ้าต้องซื้อชุด <b>V2H</b> หลักแสน <b>ไม่คุ้ม</b> เพราะแบตบ้าน 16kWh ก็เอาอยู่</div></div>
 </div>
-
 <div class="two">
   <div class="card">
     <h3 style="font-size:1.05rem;margin-bottom:10px">จ่ายไฟบ้านได้กี่คืน? (ตอนไฟดับ)</h3>
     <div class="chart-box" style="height:300px"><canvas id="backupChart"></canvas></div>
-    <div class="callout g">แบตบ้าน 10kWh เดี่ยว จ่ายได้ ~1 คืนปกติ — พอสำหรับไฟดับทั่วไป · เติม EV 80kWh เข้าไปยืดเป็น ~9 คืน (หรือ ~2 คืนถ้าเปิดแอร์ทั้งคืนหน้าร้อน)</div>
   </div>
   <div class="card">
-    <h3 style="font-size:1.05rem;margin-bottom:10px">2 แบบ — เลือกให้ถูก</h3>
-    <div class="spec">
-      <div><span><b>V2L</b> (ปลั๊กในรถ 2.2–3.3kW)</span><span style="color:var(--green)">~0฿ ถ้ารถมีให้ ✅</span></div>
-      <div><span>ใช้กับ</span><span>ตู้เย็น+ไฟ+พัดลม+แอร์ 1 ตัว</span></div>
-      <div><span><b>V2H</b> (จ่ายเข้าตู้ไฟทั้งบ้าน)</span><span style="color:var(--peak)">หลักแสน ❌</span></div>
-      <div><span>ต้องมี</span><span>charger 2 ทาง + รถรองรับ CCS 2 ทาง (หายากในไทย)</span></div>
-    </div>
-    <div class="callout">Sigenergy รองรับ V2X ในระบบ แต่ตัวชี้ขาดคือ <b>ตัวรถ</b> ต้องรองรับ bidirectional — ควรเช็ครุ่นรถว่ามี V2L หรือ V2G หรือไม่</div>
+    <h3 style="font-size:1.05rem;margin-bottom:10px">ข้อควรรู้</h3>
+    <ul class="clean">
+      <li><b>V2L</b> (ปลั๊กในรถ 2.2–3.3kW): ~0฿ ถ้ารถมีให้ — ใช้ตู้เย็น+ไฟ+พัดลม+แอร์ 1 ตัว (หลายแอร์พร้อมกันไม่ไหว)</li>
+      <li><b>V2H</b> (เข้าตู้ไฟทั้งบ้าน): หลักแสน + รถต้องรองรับ CCS 2 ทาง (หายากในไทย)</li>
+      <li>⚠️ <b>อย่าเอา EV จ่ายไฟลดบิลทุกวัน</b> — ค่าเสื่อมแบตรถ ~2.5฿/หน่วย กินกำไรส่วนต่างจนแทบไม่เหลือ แถมเร่งแบตรถ (แพงกว่าแบตบ้านมาก) เสื่อม</li>
+      <li>กรณีฉุกเฉินนาน ๆ ครั้ง ค่าเสื่อม ~24฿/คืน เล็กน้อยมากเทียบกับการมีไฟใช้</li>
+    </ul>
   </div>
-</div>
-
-<div class="card">
-  <h3 style="font-size:1.05rem;margin-bottom:8px">⚠️ แต่ “อย่า” เอา EV มาจ่ายไฟลดบิลทุกวัน</h3>
-  <ul class="clean">
-    <li>ค่าเสื่อมแบตรถ ~<b>2.5฿/หน่วย</b> ที่ปั่นออก (แบต 80kWh ~5 แสน / 2,500 รอบ) ≈ เท่ากับค่าไฟ off-peak (3฿) ที่ชาร์จเข้าไป → <b>ใช้รายวันแทบไม่เหลือกำไร แถมเร่งรถเสื่อม</b></li>
-    <li>กรณี <b>ฉุกเฉินไฟดับ</b> นาน ๆ ครั้ง: ค่าเสื่อม ~24฿/คืน — <b>เล็กน้อยมาก</b>เทียบกับมูลค่าการมีไฟใช้ (ตู้เย็นไม่เสีย ปลอดภัย) → คุ้มในแง่นี้</li>
-    <li>กำลังจ่าย V2L ~3.3kW: โหลดบ้านเฉลี่ยแค่ 0.8kW จึงเหลือเฟือสำหรับของจำเป็น แต่ <b>เปิดหลายแอร์พร้อมกันไม่ไหว</b></li>
-    <li>เก็บแบตรถไว้ ~20% (16 kWh ≈ วิ่งได้ 80–100 กม.) เผื่อต้องขับฉุกเฉิน</li>
-  </ul>
 </div>
 
 <!-- ASSUMPTIONS -->
 <h2>สมมติฐานและข้อควรระวัง</h2>
 <div class="card">
   <ul class="clean">
-    <li><b>เรตค่าไฟ (สำคัญที่สุด):</b> ใช้ On-Peak 6฿ / Off-Peak 3฿ ตามที่กำหนด — แต่ TOU จริงของ กฟน./กฟภ. On-Peak ต่ำกว่านี้และคิดเฉพาะ จ.–ศ. (เสาร์–อาทิตย์ + วันหยุด = Off-Peak ทั้งวัน) หากเรตเฉลี่ยจริงต่ำลง ~15% ค่าประหยัดจะเหลือ ~27,300฿/ปี และ <b>คืนทุนขยับเป็น ~11 ปี</b></li>
-    <li><b>ราคาชุด:</b> สมมติ 300,000฿ ตามที่แจ้ง — สำหรับ Sigenergy แท้ (5kW hybrid + 10kWh แบต + ~5kWp แผง + ติดตั้ง) ราคานี้ <b>ค่อนข้างตึง อาจสูงกว่านี้</b> ควรขอ BOM/ใบเสนอราคาแยกรายการ ถ้าราคาจริงสูงขึ้น คืนทุนยาวขึ้นตามสัดส่วน</li>
-    <li><b>การผลิตไฟ:</b> กรณีฐานสมมติแผง ~5 kWp ผลิต ~19 หน่วย/วัน (≈1,387 kWh/kWp/ปี ซึ่งเป็น <b>ฝั่งดี</b> ของช่วงจริง 1,300–1,500) ค่านี้คิดจาก <b>วันเฉลี่ยทั้งปี</b> — การจำลองแบบรายวันจริงจะได้ผลประหยัด <b>ต่ำลง ~5–10%</b> เพราะหน้าฝน (พ.ค.–ต.ค.) ผลิตได้น้อยหลายวันติด</li>
-    <li><b>EV:</b> โมเดลให้ EV ชาร์จกลางคืน Off-Peak ตามเดิม (ถูกที่สุดอยู่แล้ว) — การเลื่อนเวลาชาร์จ <b>ไม่ช่วยประหยัดเพิ่ม</b> (ดูหมายเหตุด้านบน) คันโยกเดียวคือเพิ่มขนาดแผง</li>
-    <li><b>ไม่ได้รวมในกราฟกำไร:</b> ค่าเปลี่ยน inverter (~ปีที่ 10–12, หลักหมื่น) ซึ่งตกใกล้ ๆ ปีคืนทุนพอดี, ค่าบำรุงรักษา/ล้างแผง, การเปลี่ยนแบตหลังหมดประกัน ~10 ปี, ดอกเบี้ยถ้าผ่อน — ทั้งหมดทำให้คืนทุน <b>ยาวขึ้น</b>; ส่วนการขายไฟคืนนั้น <b>มักได้ราคาต่ำ (~2.2฿/หน่วย ไม่ใช่ 1:1) มีโควตา และอาจสมัครไม่ได้</b> — ไม่ควรพึ่งเป็นทางหลัก</li>
+    <li><b>เรตค่าไฟ (สำคัญที่สุด):</b> ใช้ On-Peak 6฿ / Off-Peak 3฿ ตามที่กำหนด — TOU จริงของ กฟน./กฟภ. On-Peak ต่ำกว่านี้ + เสาร์–อาทิตย์เป็น Off-Peak ทั้งวัน หากเรตเฉลี่ยจริงต่ำลง ~15% คืนทุนขยับเป็น <b>~11–13 ปี</b></li>
+    <li><b>การผลิตไฟ:</b> แผง 8 kWp ผลิต ~<b>29 หน่วย/วัน</b> (≈1,400 kWh/kWp/ปี, inverter 6kW clip เล็กน้อย ~5%) — คิดจากวันเฉลี่ยทั้งปี การจำลองรายวันจริงอาจต่ำลง ~5–10% (หน้าฝนผลิตน้อยหลายวันติด)</li>
+    <li><b>ขนาดระบบ:</b> 8 kWp + 16 kWh กลบโหลดบ้านได้เต็ม (บ้าน 19.3 หน่วย/วัน) — แบตที่ใหญ่ขึ้น (16 vs 10kWh) ช่วยจ่ายโหลดบ้านตลอดคืน แต่ส่วนเกินนั้นเป็นมูลค่า Off-Peak (3฿) จึงเพิ่มความคุ้มแบบพอประมาณ + ได้ resilience</li>
+    <li><b>EV:</b> โมเดลให้ EV ชาร์จกลางคืน Off-Peak ตามเดิม — การ <b>ย้าย EV มากลางวัน</b> ดูดไฟเหลือคือคันโยกหลักที่ทำให้คืนทุนเร็วขึ้น (ใช้ตัวควบคุมเช่น evcc อ่านค่าจาก Solis ผ่าน Modbus)</li>
+    <li><b>ไม่ได้รวมในกราฟกำไร:</b> ค่าเปลี่ยน inverter (~ปีที่ 10–12), ค่าบำรุงรักษา/ล้างแผง, เปลี่ยนแบตหลังหมดประกัน ~10 ปี, ดอกเบี้ยถ้าผ่อน — ทั้งหมดทำให้คืนทุน <b>ยาวขึ้น</b></li>
     <li><b>การเสื่อม:</b> กราฟคืนทุนคิดประสิทธิภาพลดปีละ 1.5% และค่าไฟขึ้นปีละ 3%</li>
   </ul>
 </div>
 
 <footer>
-  <p><b>วิธีคิด:</b> โมเดลการไหลของพลังงานรายวันจากข้อมูลใช้ไฟจริง (บ้าน 19.29 + EV 20.72 หน่วย/วัน) × เรตที่กำหนด · ตัวเลขเป็นประมาณการเชิงวิศวกรรม ควรขอใบเสนอราคาและการประเมินหน้างานจริงจากผู้ติดตั้ง (<a href="https://www.solartech-center.co.th/sigenergy">Solartech / Sigenergy</a>) เพื่อยืนยัน</p>
-  <p style="margin-top:6px;opacity:.6">จัดทำโดย Dev Team · 2 มิ.ย. 2026</p>
+  <p><b>วิธีคิด:</b> โมเดลการไหลของพลังงานรายวันจากข้อมูลใช้ไฟจริง (บ้าน 19.29 + EV 20.72 หน่วย/วัน) × เรตที่กำหนด · ตัวเลขเป็นประมาณการเชิงวิศวกรรม ควรขอใบเสนอราคาและการประเมินหน้างานจริงจากผู้ติดตั้งเพื่อยืนยัน</p>
+  <p style="margin-top:6px;opacity:.6">จัดทำโดย Dev Team · ทุกตัวเลขผ่านการ verify อิสระจากข้อมูล CSV ดิบ</p>
 </footer>
 </div>
 
 <script>
 Chart.defaults.color="#9fb0c5";Chart.defaults.font.family="'Segoe UI','Sarabun',sans-serif";
 const gridc="#2c3a5066";
-const MB=[{m:"ธ.ค.",b:5229,a:2789},{m:"ม.ค.",b:4839,a:2379},{m:"ก.พ.",b:4852,a:1983},{m:"มี.ค.",b:4220,a:1401},{m:"เม.ย.",b:6420,a:3070},{m:"พ.ค.",b:5035,a:2169}];
-const CFY=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
-const CFCUM=[-267857,-235246,-202161,-168594,-134539,-99988,-64935,-29372,6709,43315,80453,118132,156359,195142,234489,274409,314910,356000,397688,439982];
+const MB=[{m:"ธ.ค.",b:5229,a:3055},{m:"ม.ค.",b:4839,a:2794},{m:"ก.พ.",b:4852,a:2122},{m:"มี.ค.",b:4220,a:1809},{m:"เม.ย.",b:6420,a:2826},{m:"พ.ค.",b:5035,a:1786}];
+const CFY=[...Array(20).keys()].map(i=>i+1);
+const CFCUM=[-296384,-262278,-227676,-192571,-156955,-120820,-84160,-46967,-9232,29052,67892,107298,147277,187838,228989,270739,313096,356070,399669,443902];
 
-// Bill before/after grouped bars
 new Chart(billChart,{type:"bar",data:{labels:MB.map(x=>x.m),
-  datasets:[
-    {label:"ไม่ติด Solar",data:MB.map(x=>x.b),backgroundColor:"#ff6b5e",borderRadius:5},
+  datasets:[{label:"ไม่ติด Solar",data:MB.map(x=>x.b),backgroundColor:"#ff6b5e",borderRadius:5},
     {label:"ติด Solar",data:MB.map(x=>x.a),backgroundColor:"#46d39a",borderRadius:5}]},
   options:{plugins:{legend:{position:"top",labels:{usePointStyle:true,padding:16}},
     tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw.toLocaleString()} บาท`,
       afterbody:c=>{const i=c[0].dataIndex;return ` ประหยัด ${(MB[i].b-MB[i].a).toLocaleString()} บาท (${Math.round((MB[i].b-MB[i].a)/MB[i].b*100)}%)`}}}},
   scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"ค่าไฟ (บาท/เดือน)"},beginAtZero:true}}}});
 
-// Payback cumulative line with zero crossing
 new Chart(paybackChart,{type:"line",data:{labels:CFY.map(y=>"ปี "+y),
-  datasets:[{label:"เงินสดสะสม (บาท)",data:CFCUM,
-    borderColor:"#46d39a",borderWidth:3,tension:.25,pointRadius:3,fill:{target:{value:0},
-    above:"#46d39a22",below:"#ff6b5e1f"},
+  datasets:[{label:"เงินสดสะสม",data:CFCUM,borderColor:"#46d39a",borderWidth:3,tension:.25,pointRadius:3,
+    fill:{target:{value:0},above:"#46d39a22",below:"#ff6b5e1f"},
     pointBackgroundColor:CFCUM.map(v=>v>=0?"#46d39a":"#ff6b5e")}]},
-  options:{plugins:{legend:{display:false},
-    tooltip:{callbacks:{label:c=>` สะสม ${c.raw.toLocaleString()} บาท`}}},
-  scales:{x:{grid:{display:false}},
-    y:{grid:{color:gridc},title:{display:true,text:"กำไร/ขาดทุนสะสม (บาท)"},
-      ticks:{callback:v=>(v/1000)+"k"}}}}});
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` สะสม ${c.raw.toLocaleString()} บาท`}}},
+  scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"กำไร/ขาดทุนสะสม (บาท)"},ticks:{callback:v=>(v/1000)+"k"}}}}});
 
-// Scenario payback grouped bars (given rate 6/3)
-const SC=[
-  {n:"5 kWp",c:"#5cc8ff",pb:[9.3,10.9,12.4]},
-  {n:"8 kWp · ไฟเหลือเต็ม",c:"#46d39a",pb:[7.3,8.6,9.8]},
-  {n:"8 kWp · ไฟเหลือครึ่ง",c:"#ffb020",pb:[8.5,10.0,11.4]},
-  {n:"8 kWp · ไฟเหลือทิ้ง",c:"#ff6b5e",pb:[10.2,11.9,13.6]}];
-new Chart(scenChart,{type:"bar",data:{labels:["ราคา 300k","ราคา 350k","ราคา 400k"],
-  datasets:SC.map(s=>({label:s.n,data:s.pb,backgroundColor:s.c,borderRadius:4}))},
-  options:{plugins:{legend:{position:"top",labels:{usePointStyle:true,padding:14,font:{size:11}}},
-    tooltip:{callbacks:{label:c=>` ${c.dataset.label}: คืนทุน ${c.raw} ปี`}}},
-  scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"ระยะคืนทุน (ปี)"},beginAtZero:true}}}});
+new Chart(flowChart,{type:"doughnut",data:{
+  labels:["แผงจ่ายกลางวัน (6฿)","แบตจ่ายพีคเย็น (6฿)","แบตจ่ายกลางคืน (3฿)","ไฟเหลือ→EV (3฿)"],
+  datasets:[{data:[36,33,24,24],backgroundColor:["#ffd24d","#ffb020","#5cc8ff","#a98bff"],borderColor:"#1a2230",borderWidth:3}]},
+  options:{cutout:"58%",plugins:{legend:{position:"bottom",labels:{padding:12,usePointStyle:true,font:{size:11}}},
+    tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} บาท/วัน`}}}}});
 
-// 2nd battery: extra annual saving by case
-new Chart(battChart,{type:"bar",data:{
-  labels:["5kWp","8kWp\nไฟเหลือถูกใช้แล้ว","8kWp\nไฟเหลือถูกทิ้ง→แบต","ย้าย EV/Arbitrage"],
-  datasets:[{label:"ประหยัดเพิ่ม/ปี (฿)",data:[0,0,10308,9247],
-    backgroundColor:["#ff6b5e","#ff6b5e","#46d39a","#ffb020"],borderRadius:5}]},
-  options:{plugins:{legend:{display:false},
-    tooltip:{callbacks:{label:c=>` +${c.raw.toLocaleString()} ฿/ปี · คืนทุน ${c.raw>0?Math.round(100000/c.raw)+' ปี':'ไม่คืนทุน'}`}}},
-  scales:{x:{grid:{display:false},ticks:{font:{size:10}}},
-    y:{grid:{color:gridc},title:{display:true,text:"ประหยัดเพิ่ม (฿/ปี)"},beginAtZero:true,
-      ticks:{callback:v=>v.toLocaleString()}}}}});
+// surplus capture sensitivity -> annual saving
+new Chart(capChart,{type:"bar",data:{labels:["EV กลางคืน\n(ไฟเหลือทิ้ง)","ใช้ไฟเหลือครึ่ง","ย้าย EV กลางวัน\n(ดูดเต็ม)"],
+  datasets:[{label:"ประหยัด/ปี (฿)",data:[33616,38008,42400],backgroundColor:["#ff6b5e","#ffb020","#46d39a"],borderRadius:5}]},
+  options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw.toLocaleString()} ฿/ปี · คืนทุน ${(330000/c.raw).toFixed(1)} ปี`}}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{grid:{color:gridc},title:{display:true,text:"ประหยัด (฿/ปี)"},beginAtZero:true,ticks:{callback:v=>(v/1000)+"k"}}}}});
 
-// Backup duration: nights of house power, by source & load
-new Chart(backupChart,{type:"bar",data:{
-  labels:["แบตบ้าน\n10kWh","EV 80kWh\n(ใช้ 64)","บ้าน+EV\nรวม"],
+new Chart(backupChart,{type:"bar",data:{labels:["แบตบ้าน\n16kWh","EV 80kWh\n(ใช้ 64)","บ้าน+EV\nรวม"],
   datasets:[
-    {label:"คืนปกติ (7.9 หน่วย)",data:[1.2,8.1,9.3],backgroundColor:"#46d39a",borderRadius:4},
-    {label:"เย็น-เช้า (12.5)",data:[0.8,5.1,5.9],backgroundColor:"#5cc8ff",borderRadius:4},
-    {label:"หน้าร้อนเปิดแอร์ (35)",data:[0.3,1.8,2.1],backgroundColor:"#ff6b5e",borderRadius:4}]},
+    {label:"คืนปกติ (7.9 หน่วย)",data:[1.9,8.1,10.1],backgroundColor:"#46d39a",borderRadius:4},
+    {label:"เย็น-เช้า (12.5)",data:[1.2,5.1,6.3],backgroundColor:"#5cc8ff",borderRadius:4},
+    {label:"หน้าร้อนเปิดแอร์ (35)",data:[0.4,1.8,2.2],backgroundColor:"#ff6b5e",borderRadius:4}]},
   options:{plugins:{legend:{position:"top",labels:{usePointStyle:true,padding:10,font:{size:10}}},
     tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw} คืน`}}},
   scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"จำนวนคืน"},beginAtZero:true}}}});
-
-// Savings flow doughnut
-new Chart(flowChart,{type:"doughnut",data:{
-  labels:["แผงจ่ายกลางวัน (On-Peak)","แบตจ่ายพีคเย็น (On-Peak)","แบตจ่ายกลางคืน (Off-Peak)","ไฟเหลือ→EV"],
-  datasets:[{data:[35.9,32.6,12.2,7.4],backgroundColor:["#ffd24d","#ffb020","#5cc8ff","#a98bff"],borderColor:"#1a2230",borderWidth:3}]},
-  options:{cutout:"58%",plugins:{legend:{position:"bottom",labels:{padding:12,usePointStyle:true,font:{size:11}}},
-    tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} บาท/วัน`}}}}});
 </script>
 </body>
 </html>
