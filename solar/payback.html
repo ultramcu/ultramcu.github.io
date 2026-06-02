@@ -238,6 +238,44 @@
 </div>
 <div class="callout">ลำดับความคุ้มของการใช้เงินก้อนถัดไป: <b>1) มีแผงให้พอ → 2) ใช้ไฟเหลือให้คุ้ม (ย้าย EV มากลางวัน ฟรี) → 3) ค่อยคิดเรื่องแบตเพิ่ม</b> — แบตลูกที่ 2 ควรเป็น <b>ตัวเลือกท้าย ๆ</b> และเฉพาะเมื่อมีไฟเหลือเหลือทิ้งจริง ๆ เท่านั้น</div>
 
+<!-- ===== V2H / EV BACKUP ===== -->
+<h2>🔌 ใช้รถ EV (80 kWh) จ่ายไฟบ้านตอนไฟดับ — คุ้มไหม?</h2>
+<p class="lead">วิเคราะห์ V2H/V2L: เอาแบตรถ EV 80 kWh มาเป็นไฟสำรองยามไฟดับกลางคืน เทียบกับแบตบ้าน 10 kWh ที่มีอยู่</p>
+
+<div class="verdict" style="background:#46d39a12;border-color:#46d39a40">
+  <div class="ic">✅</div>
+  <div><div class="t">คุ้ม “ถ้า” รถมี V2L ติดมาในตัว — แต่ไม่ต้องลงทุน V2H แพง ๆ</div>
+  <div class="d">แบตรถ 80 kWh เป็นไฟสำรอง <b>ก้อนมหึมา (~64 kWh ใช้ได้ เก็บ 20% ไว้ขับ)</b> จ่ายไฟบ้านได้ ~<b>8 คืน</b> — มากกว่าแบตบ้าน 10kWh ถึง 7 เท่า ถ้ารถมี <b>V2L (ปลั๊กไฟในตัว)</b> ติดมาอยู่แล้ว ต้นทุนแทบเป็นศูนย์ → คุ้มไว้ใช้ฉุกเฉิน แต่ถ้าต้องซื้อชุด <b>V2H</b> (จ่ายเข้าตู้ไฟทั้งบ้าน) หลักแสน <b>ไม่คุ้ม</b> เพราะแบตบ้าน 10kWh ก็เอาอยู่สำหรับไฟดับทั่วไปแล้ว</div></div>
+</div>
+
+<div class="two">
+  <div class="card">
+    <h3 style="font-size:1.05rem;margin-bottom:10px">จ่ายไฟบ้านได้กี่คืน? (ตอนไฟดับ)</h3>
+    <div class="chart-box" style="height:300px"><canvas id="backupChart"></canvas></div>
+    <div class="callout g">แบตบ้าน 10kWh เดี่ยว จ่ายได้ ~1 คืนปกติ — พอสำหรับไฟดับทั่วไป · เติม EV 80kWh เข้าไปยืดเป็น ~9 คืน (หรือ ~2 คืนถ้าเปิดแอร์ทั้งคืนหน้าร้อน)</div>
+  </div>
+  <div class="card">
+    <h3 style="font-size:1.05rem;margin-bottom:10px">2 แบบ — เลือกให้ถูก</h3>
+    <div class="spec">
+      <div><span><b>V2L</b> (ปลั๊กในรถ 2.2–3.3kW)</span><span style="color:var(--green)">~0฿ ถ้ารถมีให้ ✅</span></div>
+      <div><span>ใช้กับ</span><span>ตู้เย็น+ไฟ+พัดลม+แอร์ 1 ตัว</span></div>
+      <div><span><b>V2H</b> (จ่ายเข้าตู้ไฟทั้งบ้าน)</span><span style="color:var(--peak)">หลักแสน ❌</span></div>
+      <div><span>ต้องมี</span><span>charger 2 ทาง + รถรองรับ CCS 2 ทาง (หายากในไทย)</span></div>
+    </div>
+    <div class="callout">Sigenergy รองรับ V2X ในระบบ แต่ตัวชี้ขาดคือ <b>ตัวรถ</b> ต้องรองรับ bidirectional — ควรเช็ครุ่นรถว่ามี V2L หรือ V2G หรือไม่</div>
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="font-size:1.05rem;margin-bottom:8px">⚠️ แต่ “อย่า” เอา EV มาจ่ายไฟลดบิลทุกวัน</h3>
+  <ul class="clean">
+    <li>ค่าเสื่อมแบตรถ ~<b>2.5฿/หน่วย</b> ที่ปั่นออก (แบต 80kWh ~5 แสน / 2,500 รอบ) ≈ เท่ากับค่าไฟ off-peak (3฿) ที่ชาร์จเข้าไป → <b>ใช้รายวันแทบไม่เหลือกำไร แถมเร่งรถเสื่อม</b></li>
+    <li>กรณี <b>ฉุกเฉินไฟดับ</b> นาน ๆ ครั้ง: ค่าเสื่อม ~24฿/คืน — <b>เล็กน้อยมาก</b>เทียบกับมูลค่าการมีไฟใช้ (ตู้เย็นไม่เสีย ปลอดภัย) → คุ้มในแง่นี้</li>
+    <li>กำลังจ่าย V2L ~3.3kW: โหลดบ้านเฉลี่ยแค่ 0.8kW จึงเหลือเฟือสำหรับของจำเป็น แต่ <b>เปิดหลายแอร์พร้อมกันไม่ไหว</b></li>
+    <li>เก็บแบตรถไว้ ~20% (16 kWh ≈ วิ่งได้ 80–100 กม.) เผื่อต้องขับฉุกเฉิน</li>
+  </ul>
+</div>
+
 <!-- ASSUMPTIONS -->
 <h2>สมมติฐานและข้อควรระวัง</h2>
 <div class="card">
@@ -308,6 +346,17 @@ new Chart(battChart,{type:"bar",data:{
   scales:{x:{grid:{display:false},ticks:{font:{size:10}}},
     y:{grid:{color:gridc},title:{display:true,text:"ประหยัดเพิ่ม (฿/ปี)"},beginAtZero:true,
       ticks:{callback:v=>v.toLocaleString()}}}}});
+
+// Backup duration: nights of house power, by source & load
+new Chart(backupChart,{type:"bar",data:{
+  labels:["แบตบ้าน\n10kWh","EV 80kWh\n(ใช้ 64)","บ้าน+EV\nรวม"],
+  datasets:[
+    {label:"คืนปกติ (7.9 หน่วย)",data:[1.2,8.1,9.3],backgroundColor:"#46d39a",borderRadius:4},
+    {label:"เย็น-เช้า (12.5)",data:[0.8,5.1,5.9],backgroundColor:"#5cc8ff",borderRadius:4},
+    {label:"หน้าร้อนเปิดแอร์ (35)",data:[0.3,1.8,2.1],backgroundColor:"#ff6b5e",borderRadius:4}]},
+  options:{plugins:{legend:{position:"top",labels:{usePointStyle:true,padding:10,font:{size:10}}},
+    tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw} คืน`}}},
+  scales:{x:{grid:{display:false}},y:{grid:{color:gridc},title:{display:true,text:"จำนวนคืน"},beginAtZero:true}}}});
 
 // Savings flow doughnut
 new Chart(flowChart,{type:"doughnut",data:{
